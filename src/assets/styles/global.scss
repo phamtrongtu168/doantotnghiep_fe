@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+/*-------------- Reset CSS----------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+a {
+  color: black;
+}
+
+.bg-main-home {
+  background: url("../images/banner.png") no-repeat center / cover;
+}
+
+.house-frame {
+  overflow: hidden;
+  clip-path: polygon(50% 0%, 100% 35%, 100% 100%, 0% 100%, 0% 35%);
+}
+.dot-pattern {
+  background-color: white;
+  background-image: radial-gradient(circle, #a0aec0 2px, transparent 2px);
+  background-size: 40px 40px; /* Khoảng cách giữa các chấm */
+}
+.css-hlgwow{
+  padding: 0 !important;
+}
+// Chỉnh sửa thư viện slick
+
+.slick-prev{
+  left: 10px !important;
+  z-index: 100;
+}
+.slick-next {
+  right: 10px !important;
+}
+.css-19bb58m{
+  margin: 0 !important;
+}
+/// 
+///////////// Class thêm cho Tailwind ///////////////
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+/* Thêm vào styles.css hoặc main.css */
+.scroll-hidden {
+  overflow: auto;
+  scrollbar-width: none; /* Ẩn thanh cuộn trên Firefox */
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none; /* Ẩn thanh cuộn trên Chrome, Safari, Edge */
+}
