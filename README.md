@@ -18,7 +18,7 @@ Currently, two official plugins are available:
 ### Bước 1: Clone Dự Án
 
 ```bash
-git clone https://github.com/[username]/[ten-du-an].git
+git clone https://github.com/phamtrongtu168/doantotnghiep_fe.git
 cd [ten-du-an]
 ```
 
