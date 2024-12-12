@@ -31,29 +31,22 @@ function RoomDetailPage(props) {
   console.log(room);
   return (
     <>
-      {/* <Slider {...settings}>
+      <Slider {...settings}>
         {(room?.images?.length
           ? room.images
           : Array(3).fill({ image_url: bgPlaceholder })
-        ) // Tạo mảng 3 ảnh mặc định nếu không có ảnh
-          .map((item, index) => {
-            const [isLoaded, setIsLoaded] = useState(false);
-
-            return (
-              <div key={index} className="w-max">
-                <img
-                  src={
-                    (isLoaded ? item?.image_url : bgPlaceholder) ||
-                    bgPlaceholder
-                  } // Hiển thị ảnh hoặc placeholder
-                  alt={`Slide ${index + 1}`}
-                  onLoad={() => setIsLoaded(true)} // Đổi trạng thái khi ảnh tải xong
-                  className="w-full h-auto px-1 aspect-[3/2]"
-                />
-              </div>
-            );
-          })}
-      </Slider> */}
+        ) // Sử dụng ảnh placeholder nếu không có ảnh
+          .map((item, index) => (
+            <div key={index} className="w-max">
+              <img
+                src={item?.image_url || bgPlaceholder} // Hiển thị ảnh hoặc placeholder
+                alt={`Slide ${index + 1}`}
+                className="w-full h-auto px-1 aspect-[3/2]"
+                onError={(e) => (e.target.src = bgPlaceholder)} // Đổi sang ảnh placeholder nếu ảnh bị lỗi
+              />
+            </div>
+          ))}
+      </Slider>
 
       <section className="px-12">
         <div className="relative flex gap-4">
