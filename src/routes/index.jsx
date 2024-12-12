@@ -1,4 +1,3 @@
-
 import MyAccountPage from "../pages/Account/MyAccountPage";
 import HomePage from "../pages/Home/HomePage";
 import LoginPage from "../pages/Login/LoginPage";
@@ -11,43 +10,42 @@ import AboutPage from "../pages/About/AboutPage";
 
 export const homeRoutes = [
   {
-    path: '/',
+    path: "/",
     component: <HomePage />,
     exact: true,
   },
   {
-    path: '/login',
+    path: "/login",
     component: <LoginPage />,
   },
   {
-    path: '/rooms',
+    path: "/rooms",
     component: <RoomPage />,
   },
   {
-    path: '/room/:code',
+    path: "/room/:id",
     component: <RoomDetailPage />,
   },
   {
-    path: '/post',
+    path: "/post",
     component: <PostPage />,
   },
   {
-    path: '/about',
+    path: "/about",
     component: <AboutPage />,
   },
   {
-    path: '/utils',
+    path: "/utils",
     component: <UtilitiesPage />,
   },
   {
-    path: '/service-clean',
+    path: "/service-clean",
     component: <CleaningServicePage />,
   },
   {
-    path: '/my-account',
+    path: "/my-account",
     component: <MyAccountPage />,
   },
 ];
-
 
 export const dashboardRoutes = [];

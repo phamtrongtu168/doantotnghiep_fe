@@ -17,7 +17,7 @@ function RoomPage(props) {
   return (
     <div className="px-16">
       <div className="flex justify-between bg-[#e1e1e1] p-3 rounded-md my-4">
-        <p className="text-lg text-zinc-600">{dataRooms.length} Phòng</p>
+        <p className="text-lg text-zinc-600">{dataRooms?.length} Phòng</p>
         <div className="flex gap-2">
           <p className="text-lg text-zinc-600">Sắp xếp:</p>
           <select className="bg-transparent border-none text-primary outline-none text-lg">
@@ -34,7 +34,7 @@ function RoomPage(props) {
         {dataRooms?.map((room, index) => (
           <RoomCard
             key={index}
-            link={room.link}
+            link={`/room/${room?.id}`}
             image={room?.images[0]?.image_url}
             price={room.price}
             name={room.name}
