@@ -3,7 +3,7 @@ import tips1 from "../../assets/images/tips1.png";
 import tips2 from "../../assets/images/tips2.png";
 import tips3 from "../../assets/images/tips3.png";
 import { Element } from "react-scroll";
-
+import { Link } from "react-router-dom";
 
 const TipsToStay = () => {
   return (
@@ -24,39 +24,63 @@ const TipsToStay = () => {
           </div>
         </div>
         <div className="w-1/2 flex flex-col pl-8">
-          <div className="flex gap-4 p-4 ">
-            <img className="house-frame w-1/2 aspect-square" src={tips1} alt="" />
-            <div>
-              <h4 className="uppercase text-xl">11 bước cần làm khi thuê trọ</h4>
-              <p>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Veritatis quod cum laboriosam perspiciatis quam aperiam architecto
-                repellendus iste eum magni.
-              </p>
+          <Link to="/post/1">
+            <div className="flex gap-4 p-4 ">
+              <img
+                className="house-frame w-1/2 aspect-square"
+                src={tips1}
+                alt=""
+              />
+              <div>
+                <h4 className="uppercase text-xl">
+                  11 bước cần làm khi thuê trọ
+                </h4>
+                <p>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Veritatis quod cum laboriosam perspiciatis quam aperiam
+                  architecto repellendus iste eum magni.
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex gap-4 p-4 ">
-            <img className="house-frame w-1/2 aspect-square" src={tips2} alt="" />
-            <div>
-              <h4 className="uppercase text-xl">11 bước cần làm khi thuê trọ</h4>
-              <p>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Veritatis quod cum laboriosam perspiciatis quam aperiam architecto
-                repellendus iste eum magni.
-              </p>
+          </Link>
+          <Link to="/post/2">
+            <div className="flex gap-4 p-4 ">
+              <img
+                className="house-frame w-1/2 aspect-square"
+                src={tips2}
+                alt=""
+              />
+              <div>
+                <h4 className="uppercase text-xl">
+                  11 bước cần làm khi thuê trọ
+                </h4>
+                <p>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Veritatis quod cum laboriosam perspiciatis quam aperiam
+                  architecto repellendus iste eum magni.
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex gap-4 p-4 ">
-            <img className="house-frame w-1/2 aspect-square" src={tips3} alt="" />
-            <div>
-              <h4 className="uppercase text-xl">11 bước cần làm khi thuê trọ</h4>
-              <p>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Veritatis quod cum laboriosam perspiciatis quam aperiam architecto
-                repellendus iste eum magni.
-              </p>
+          </Link>
+          <Link to="/post/3">
+            <div className="flex gap-4 p-4 ">
+              <img
+                className="house-frame w-1/2 aspect-square"
+                src={tips3}
+                alt=""
+              />
+              <div>
+                <h4 className="uppercase text-xl">
+                  11 bước cần làm khi thuê trọ
+                </h4>
+                <p>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Veritatis quod cum laboriosam perspiciatis quam aperiam
+                  architecto repellendus iste eum magni.
+                </p>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
       </section>
     </Element>

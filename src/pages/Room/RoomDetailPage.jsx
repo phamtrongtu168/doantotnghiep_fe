@@ -54,7 +54,9 @@ function RoomDetailPage(props) {
             <strong className="text-3xl block">{room?.price} vnd/tháng</strong>
             <strong className="uppercase text-[2rem]">{room?.name}</strong>
             <p>{room?.address}</p>
-            <p>1 giường - 1 nhà vệ sinh</p>
+            <p>
+              {room?.bedrooms} phòng ngủ - {room?.toilets} nhà vệ sinh
+            </p>
             <big>Quản lý bởi Mr Tứ</big>
             <strong className="block mt-4">Mô tả</strong>
             <p className="leading-6">{room?.description}</p>
@@ -121,11 +123,11 @@ function RoomDetailPage(props) {
             <div className="flex items-center gap-4 whitespace-nowrap p-2">
               <img className="max-w-12" src={item1} alt="" />
               <p className="text-zinc-600">Diện tích</p>
-              <b>{room?.area}</b>
+              <b>{room?.area} m2</b>
             </div>
             <div className="flex items-center gap-4 whitespace-nowrap p-2">
               <img className="max-w-12" src={item2} alt="" />
-              <p className="text-zinc-600">Giường ngủ</p>
+              <p className="text-zinc-600">Phòng ngủ</p>
               <b>{room?.bedrooms}</b>
             </div>
             <div className="flex items-center gap-4 whitespace-nowrap p-2">
@@ -141,7 +143,7 @@ function RoomDetailPage(props) {
             <div className="flex items-center gap-4 whitespace-nowrap p-2">
               <img className="max-w-12" src={item5} alt="" />
               <p className="text-zinc-600">Wifi</p>
-              <b>1</b>
+              <b>{room?.wifi}</b>
             </div>
             <div className="flex items-center gap-4 whitespace-nowrap p-2">
               <img className="max-w-12" src={item6} alt="" />

@@ -17,7 +17,7 @@ function RoomPage(props) {
   return (
     <div className="px-16">
       <div className="flex justify-between bg-[#e1e1e1] p-3 rounded-md my-4">
-        <p className="text-lg text-zinc-600">{dataRooms?.length} Phòng</p>
+        <p className="text-lg text-zinc-600">{dataRooms?.total} Phòng</p>
         <div className="flex gap-2">
           <p className="text-lg text-zinc-600">Sắp xếp:</p>
           <select className="bg-transparent border-none text-primary outline-none text-lg">
@@ -31,7 +31,7 @@ function RoomPage(props) {
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 justify-items-center gap-12">
-        {dataRooms?.map((room, index) => (
+        {dataRooms?.data?.map((room, index) => (
           <RoomCard
             key={index}
             link={`/room/${room?.id}`}
