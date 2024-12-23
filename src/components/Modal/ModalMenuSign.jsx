@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { UserService } from "../../services/api";
+import { AuthService, UserService } from "../../services/api";
 
 const ModalMenuSign = ({ isOpen, typeModal, onClose }) => {
   const {
@@ -13,12 +13,12 @@ const ModalMenuSign = ({ isOpen, typeModal, onClose }) => {
     handleSubmit: handleSubmitForm2,
     formState: { errors: errorsForm2 },
   } = useForm();
-  const [typeModalSign, setTypeModalSign] = useState(0);
-  console.log(typeModalSign);
 
+  const [typeModalSign, setTypeModalSign] = useState(0);
   useEffect(() => {
     setTypeModalSign(typeModal);
   }, [typeModal]);
+
   const onSubmitForm1 = async (data) => {
     console.log("Form 1 Data:", data);
     try {
@@ -27,10 +27,22 @@ const ModalMenuSign = ({ isOpen, typeModal, onClose }) => {
       console.log(error);
     }
   };
+
   // Xử lý submit form 2
-  const onSubmitForm2 = (data) => {
+  const onSubmitForm2 = async (data) => {
     console.log("Form 2 Data:", data);
+    try {
+      const response = await AuthService.login(data);
+      const authData = {
+        user: response.user,
+        token: response.token,
+      };
+      localStorage.setItem("authData", JSON.stringify(authData));
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   if (!isOpen) return null;
 
   return (
@@ -156,20 +168,39 @@ const ModalMenuSign = ({ isOpen, typeModal, onClose }) => {
             <h2 className="text-center mb-8 font-normal text-zinc-500">
               Đăng nhập
             </h2>
-            <form action="" className="flex flex-col gap-4">
+            <form
+              onSubmit={handleSubmitForm2(onSubmitForm2)}
+              className="flex flex-col gap-4"
+            >
               <label htmlFor="">
                 <input
+                  {...registerForm2("email", {
+                    required: "Trường là bắt buộc!",
+                  })}
                   className="w-full p-3 rounded-md border-zinc-400 border outline-none"
                   type="text"
-                  placeholder="Tên đăng nhập"
+                  placeholder="Email"
                 />
+                {errorsForm2 && (
+                  <small className="text-red-500 block mt-2">
+                    {errorsForm2?.email?.message}
+                  </small>
+                )}
               </label>
               <label htmlFor="">
                 <input
+                  {...registerForm2("password", {
+                    required: "Trường là bắt buộc!",
+                  })}
                   className="w-full p-3 rounded-md border-zinc-400 border outline-none"
                   type="text"
                   placeholder="Mật Khẩu"
                 />
+                {errorsForm2 && (
+                  <small className="text-red-500 block mt-2">
+                    {errorsForm2?.password?.message}
+                  </small>
+                )}
               </label>
               <button className="p-2.5 bg-primary text-white rounded-md border-none font-bold text-base">
                 Đăng nhập
