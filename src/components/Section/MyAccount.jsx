@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
-
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 function MyAccount(props) {
   const [positionNum, setPositionNum] = useState(1);
-
+  const { authData } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!authData?.user) {
+      navigate("/");
+    }
+  }, []);
   return (
     <section
       className="border-0 border-t border-solid border-zinc-400 flex "

@@ -1,5 +1,5 @@
-import axios from 'axios';
-import {toast} from "react-toastify";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -9,8 +9,8 @@ const axiosAuth = axios.create({
 
 axiosAuth.interceptors.request.use(
   (config) => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const accessToken = user ? user.token : null;
+    const authData = JSON.parse(localStorage.getItem("authData"));
+    const accessToken = authData ? authData.token : null;
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -26,13 +26,10 @@ axiosAuth.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      console.error('Lỗi 401: Unauthorized');
-      localStorage.removeItem('user');
+      console.error("Lỗi 401: Unauthorized");
+      localStorage.removeItem("authData");
       toast.warning("Đã hết phiên đăng nhập");
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 3000);
-    }else if(error.code === "ERR_NETWORK"){
+    } else if (error.code === "ERR_NETWORK") {
       toast.error("Máy chủ đang gặp sự cố !");
     }
     return Promise.reject(error);

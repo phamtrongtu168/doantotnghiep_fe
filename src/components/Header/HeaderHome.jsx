@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Link as LinkRouter, useLocation } from "react-router-dom";
 import ModalMenuSign from "../Modal/ModalMenuSign";
 import { Link } from "react-scroll";
+import { useAuth } from "../../hooks/useAuth";
 
 const HeaderHome = () => {
   const [isModalSign, setIsModalSign] = useState(false);
   const [typeModalSign, setTypeModalSign] = useState(0);
+  const { authData } = useAuth();
 
   const location = useLocation(); // Lấy location hiện tại
 
@@ -74,21 +76,33 @@ const HeaderHome = () => {
               </>
             )}
 
-            <li className="rounded-md border border-primary border-solid px-2 py-1.5 text-primary">
-              <button
-                onClick={handleRegister}
-                className="text-primary text-base bg-transparent border-none cursor-pointer"
-              >
-                Đăng ký
-              </button>
-              <span className="text-primary mx-1">|</span>
-              <button
-                onClick={handleLogin}
-                className="text-primary text-base bg-transparent border-none cursor-pointer"
-              >
-                Đăng nhập
-              </button>
-            </li>
+            {!authData?.user && (
+              <li className="rounded-md border border-primary border-solid px-2 py-1.5 text-primary">
+                <button
+                  onClick={handleRegister}
+                  className="text-primary text-base bg-transparent border-none cursor-pointer"
+                >
+                  Đăng ký
+                </button>
+                <span className="text-primary mx-1">|</span>
+                <button
+                  onClick={handleLogin}
+                  className="text-primary text-base bg-transparent border-none cursor-pointer"
+                >
+                  Đăng nhập
+                </button>
+              </li>
+            )}
+            {authData?.user && (
+              <li>
+                <LinkRouter
+                  to="/my-account"
+                  className="text-primary text-base bg-transparent border-none cursor-pointer"
+                >
+                  {authData.user.name}
+                </LinkRouter>
+              </li>
+            )}
           </ul>
         </nav>
       </header>
