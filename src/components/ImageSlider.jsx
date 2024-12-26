@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import React, { useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const ImageSlider = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1));
+    setCurrentIndex((prevIndex) =>
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    );
   };
 
   return (
@@ -21,12 +25,12 @@ const ImageSlider = ({ images }) => {
           className="flex transition-transform duration-500"
           style={{ transform: `translateX(-${currentIndex * 75}%)` }}
         >
-          {images.map((img, index) => (
+          {images?.map((img, index) => (
             <div key={index} className="min-w-[75%] flex-shrink-0 p-2.5">
               {/* Image frame */}
               <div className="relative w-full pb-[111.11%] overflow-hidden rounded-l">
                 <img
-                  src={img}
+                  src={img?.image_url}
                   alt={`Slide ${index + 1}`}
                   className="absolute top-0 left-0 w-full h-full object-cover rounded-3xl border-2 border-solid border-white"
                 />

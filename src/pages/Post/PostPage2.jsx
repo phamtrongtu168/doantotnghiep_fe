@@ -1,4 +1,5 @@
 import React from "react";
+
 export default function PostPage2() {
   return (
     <>
@@ -29,25 +30,25 @@ export default function PostPage2() {
                 <label className="block">
                   <input type="radio" className="hidden" />
                   <span className="p-2.5 cursor-pointer rounded-lg block bg-zinc-200">
-                    Option 1
+                    1 phòng
                   </span>
                 </label>
                 <label className="block">
                   <input type="radio" className="hidden" />
                   <span className="p-2.5 cursor-pointer rounded-lg block bg-zinc-200">
-                    Option 2
+                    2 phòng
                   </span>
                 </label>
                 <label className="block">
                   <input type="radio" className="hidden" />
                   <span className="p-2.5 cursor-pointer rounded-lg block bg-zinc-200">
-                    Option 3
+                    3 phòng
                   </span>
                 </label>
                 <label className="block">
                   <input type="radio" className="hidden" />
                   <span className="p-2.5 cursor-pointer rounded-lg block bg-zinc-200">
-                    Option 4
+                    4 phòng
                   </span>
                 </label>
               </div>

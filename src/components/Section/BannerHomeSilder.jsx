@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { RoomService } from "../../services/api";
 import { Element } from "react-scroll";
 import { useNavigate } from "react-router-dom";
+import { getAll } from "../../services/api/RoomService";
 
 const BannerHomeSilder = () => {
   const images = [supBanner1, supBanner2, supBanner3, supBanner4, supBanner5];
@@ -31,6 +32,10 @@ const BannerHomeSilder = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const { data: rooms } = useQuery({
+    queryKey: ["room-list"],
+    queryFn: () => getAll(),
+  });
   const { data: provinces } = useQuery({
     queryKey: ["provinces"],
     queryFn: () => getAllProvince(),
@@ -110,6 +115,7 @@ const BannerHomeSilder = () => {
       navigate("/rooms", { state: response });
     } catch (error) {}
   };
+  const firstRoom = rooms && rooms[0];
 
   return (
     <Element name="home">
@@ -118,22 +124,21 @@ const BannerHomeSilder = () => {
           <div className="w-3/5">
             <h1 className="text-6xl text-primary">Phòng Đặc Biệt</h1>
             <strong className="block text-white text-3xl leading-normal text-shadow">
-              Giá: 3.000k/tháng
+              Giá: {firstRoom?.price}/tháng
             </strong>
             <strong className="block text-white text-3xl leading-normal text-shadow">
-              Địa chỉ: 296 Võ Nguyên Giáp, <br /> Ngũ Hành Sơn, Đà Nẵng
+              Địa chỉ: {firstRoom?.address} <br />
             </strong>
-            <p className="py-8 text-white text-lg">
-              Phòng được thiết kế với không gian sông rộng rãi và tháng mát xung
-              quanh với nhiều dịch vụ tiện ích khác nhau có tầm nhìn ra biển và
-              ánh sáng tự nhiên vào mỗi buổi sáng.
-            </p>
-            <button className="bg-primary cursor-pointer text-white border-none px-8 py-2 rounded text-lg">
+            <p className="py-8 text-white text-lg">{firstRoom?.description}</p>
+            <button
+              className="bg-primary cursor-pointer text-white border-none px-8 py-2 rounded text-lg"
+              onClick={() => navigate(`/room/${firstRoom?.id}`)}
+            >
               Thuê Ngay
             </button>
           </div>
           <div className="w-2/5">
-            <ImageSlider images={images} />
+            <ImageSlider images={firstRoom?.images} />
           </div>
         </div>
         <div className="absolute left-8 right-8 -bottom-[8vh] py-1 px-6 bg-white shadow-black rounded-xl shadow-2xl">

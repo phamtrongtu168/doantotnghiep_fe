@@ -153,6 +153,7 @@ function RoomDetailPage(props) {
                       required: "Trường là bắt buộc!",
                     })}
                   />
+                  <b>1 Tháng</b>
                 </label>
                 <label className="flex gap-2 whitespace-nowrap">
                   <input
@@ -162,6 +163,7 @@ function RoomDetailPage(props) {
                       required: "Trường là bắt buộc!",
                     })}
                   />
+                  <b>6 Tháng</b>
                 </label>
                 <label className="flex gap-2 whitespace-nowrap">
                   <input
@@ -171,6 +173,7 @@ function RoomDetailPage(props) {
                       required: "Trường là bắt buộc!",
                     })}
                   />
+                  <b>12 Tháng</b>
                 </label>
                 <label className="flex gap-2 whitespace-nowrap" htmlFor="">
                   <input type="radio" />

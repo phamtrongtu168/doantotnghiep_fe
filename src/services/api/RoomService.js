@@ -1,6 +1,6 @@
 import axiosPublic from "../../utils/axiosPublic";
 
-export const getAll = async (item) => {
+export const getAll = async () => {
   try {
     const temp = await axiosPublic.get(`rooms`);
     return temp?.data;
@@ -9,6 +9,17 @@ export const getAll = async (item) => {
     return [];
   }
 };
+
+export const getAllByUser = async () => {
+  try {
+    const temp = await axiosPublic.get(`user/rooms`);
+    return temp?.data;
+  } catch (e) {
+    console.log(e);
+    return [];
+  }
+};
+
 export const getAllSearch = async (item) => {
   try {
     const temp = await axiosPublic.get(
@@ -20,6 +31,7 @@ export const getAllSearch = async (item) => {
     return [];
   }
 };
+
 export const getById = async (id) => {
   try {
     const temp = await axiosPublic.get(`rooms/${id}`);

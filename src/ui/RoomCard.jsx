@@ -16,9 +16,12 @@ const RoomCard = ({ link, image, price, name, address, details }) => {
         <p className="my-2">{name}</p>
         <p className="my-2">{address}</p>
         <p className="my-2">{details}</p>
-        <button className="w-full text-base cursor-pointer mt-2 p-1 rounded text-primary border-[2px] border-solid border-primary hover:bg-primary hover:text-white">
+        <Link
+          to={link}
+          className="w-full text-base cursor-pointer mt-2 p-1 rounded text-primary border-[2px] border-solid border-primary hover:bg-primary hover:text-white"
+        >
           Đặt phòng
-        </button>
+        </Link>
       </figcaption>
     </div>
   );

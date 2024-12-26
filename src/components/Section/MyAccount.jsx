@@ -1,110 +1,167 @@
-import React, { useEffect, useState } from "react";
-import { FaUser } from "react-icons/fa";
+import React, { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-function MyAccount(props) {
-  const [positionNum, setPositionNum] = useState(1);
-  const { authData } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!authData?.user) {
-      navigate("/");
-    }
-  }, []);
-  return (
-    <section
-      className="border-0 border-t border-solid border-zinc-400 flex "
-      style={{ minHeight: "calc(100svh - 2.35rem)" }}
-    >
-      <aside className="bg-zinc-100 max-w-96 border-0 border-r border-solid border-zinc-400">
-        <div className="border-0 border-b border-solid border-zinc-400 text-center p-4">
-          <FaUser size={32} color="blue" />
-          <h4 className="text-primary text-xl">Phạm Tứ</h4>
-        </div>
-        <div className="">
-          <h3
-            onClick={() => setPositionNum(1)}
-            className="border-0 border-b border-solid font-normal hover:underline cursor-pointer py-3 px-6 border-zinc-400"
-          >
-            Thông tin tài khoản
-          </h3>
-          <h3
-            onClick={() => setPositionNum(2)}
-            className="border-0 border-b border-solid font-normal hover:underline cursor-pointer py-3 px-6 border-zinc-400"
-          >
-            Trọ của tôi
-          </h3>
-        </div>
-      </aside>
-      <div className="p-8 flex-1 min-h-[82vh]">
-        {positionNum === 1 && (
-          <>
-            <h2 className="mb-8 text-zinc-600">Thông tin</h2>
-            <form action="">
-              <b className="text-zinc-600">Tên tài khoản</b>
-              <div className="my-2 flex gap-2">
-                <p>phamtrongtu</p>
-                <span className="text-primary">Edit</span>
-              </div>
-              <b className="text-zinc-600">Mật khẩu</b>
-              <div className="my-2 flex gap-2">
-                <p>*************</p>
-                <span className="text-primary">Edit</span>
-              </div>
+import { useQuery } from "react-query";
+import { getAllByUser } from "../../services/api/RoomService";
 
-              <label className="flex flex-col gap-2 my-2" htmlFor="">
-                <span>Địa chỉ</span>
-                <input
-                  className="p-2 rounded border-zinc-400 w-1/3 outline-none"
-                  type="text"
-                />
-              </label>
-              <label className="flex flex-col gap-2 my-2" htmlFor="">
-                <span>Số điện thoại</span>
-                <input
-                  className="p-2 rounded border-zinc-400 w-1/3 outline-none"
-                  type="text"
-                />
-              </label>
-            </form>
-          </>
-        )}
-        {positionNum === 2 && (
-          <>
-            <h2 className="mb-8 text-zinc-600">Trọ của tôi</h2>
-            <h2 className="uppercase">Tên phòng: Phòng A101</h2>
-            <div className="flex flex-col gap-2 my-4">
-              <div className="flex gap-4">
-                <b>Địa chỉ:</b>
-                <p className="text-zinc-600">
-                  09 An Thượng 09, Ngũ Hành Sơn, Đà Nẵng
-                </p>
-              </div>
-              <div className="flex gap-4">
-                <b>Giá thuê:</b>
-                <p className="text-zinc-600">3.000.000 VNĐ</p>
-              </div>
-              <div className="flex gap-4">
-                <b>Ngày bắt đầu hợp đồng:</b>
-                <p className="text-zinc-600">16/09/2023</p>
-              </div>
-              <div className="flex gap-4">
-                <b>Ngày kết thúc hợp đồng:</b>
-                <p className="text-zinc-600">16/09/2024</p>
-              </div>
-              <div className="flex flex-col gap-4 bg-zinc-200 w-1/2 p-2 rounded">
-                <strong> Chi phí tháng 12</strong>
-                <strong>Tiền điện</strong>
-                <strong>Tiền nước</strong>
-                <strong>Tiền phòng</strong>
-                <strong>Tổng: </strong>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-    </section>
+export function AccountMe() {
+  const { authData } = useAuth();
+  const [isEditingName, setIsEditingName] = useState(false),
+    [isEditingEmail, setIsEditingEmail] = useState(false),
+    [isEditingPhone, setIsEditingPhone] = useState(false),
+    [isEditingDate, setIsEditingDate] = useState(false);
+
+  const [name, setName] = useState(authData?.user?.name),
+    [email, setEmail] = useState(authData?.user?.email),
+    [phone, setPhone] = useState(authData?.user?.phone),
+    [dateOfBirth, setDateOfBirth] = useState(authData?.user?.date_of_birth);
+  return (
+    <>
+      <h2 className="mb-8 text-zinc-600">Thông tin</h2>
+      <form className="w-1/2">
+        <b className="text-zinc-600">Tên tài khoản</b>
+        <div className="my-2 flex gap-2 items-center">
+          {isEditingName ? (
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="border p-2.5 rounded w-full outline-none"
+            />
+          ) : (
+            <p className="w-full py-2">{name}</p>
+          )}
+          <span
+            className="text-primary cursor-pointer"
+            onClick={() => setIsEditingName(!isEditingName)}
+          >
+            {isEditingName ? "Save" : "Edit"}
+          </span>
+        </div>
+
+        <b className="text-zinc-600">Email</b>
+        <div className="my-2 flex gap-2 items-center">
+          {isEditingEmail ? (
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border p-2.5 rounded w-full outline-none"
+            />
+          ) : (
+            <p className="w-full py-2">{email}</p>
+          )}
+          <span
+            className="text-primary cursor-pointer"
+            onClick={() => setIsEditingEmail(!isEditingEmail)}
+          >
+            {isEditingEmail ? "Save" : "Edit"}
+          </span>
+        </div>
+
+        <b className="text-zinc-600">Số điện thoại</b>
+        <div className="my-2 flex gap-2 items-center">
+          {isEditingPhone ? (
+            <input
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="border p-2.5 rounded w-full outline-none"
+            />
+          ) : (
+            <p className="w-full py-2">{phone}</p>
+          )}
+          <span
+            className="text-primary cursor-pointer"
+            onClick={() => setIsEditingPhone(!isEditingPhone)}
+          >
+            {isEditingPhone ? "Save" : "Edit"}
+          </span>
+        </div>
+
+        <b className="text-zinc-600">Ngày sinh</b>
+        <div className="my-2 flex gap-2 items-center">
+          {isEditingDate ? (
+            <input
+              type="date"
+              value={dateOfBirth}
+              onChange={(e) => setDateOfBirth(e.target.value)}
+              className="border p-2.5 rounded w-full outline-none"
+            />
+          ) : (
+            <p className="w-full py-2">{dateOfBirth}</p>
+          )}
+          <span
+            className="text-primary cursor-pointer"
+            onClick={() => setIsEditingDate(!isEditingDate)}
+          >
+            {isEditingDate ? "Save" : "Edit"}
+          </span>
+        </div>
+        <b className="text-zinc-600">Vai trò</b>
+        <div>
+          <p className="py-2">{authData?.user?.role}</p>
+        </div>
+      </form>
+    </>
   );
 }
 
-export default MyAccount;
+export function RoomMe() {
+  const { data: roomsMe } = useQuery({
+    queryKey: ["room-me"],
+    queryFn: () => getAllByUser(),
+  });
+
+  if (!roomsMe) {
+    return null;
+  }
+
+  return (
+    <>
+      <h2 className="mb-8 text-zinc-600">Trọ của tôi</h2>
+      {roomsMe.map((roomData, index) => {
+        const room = roomData.room;
+        const rentalBill = roomData.rentalBills[0]; // Giả sử chỉ lấy hóa đơn đầu tiên
+
+        return (
+          <div key={index} className="mb-8">
+            <h3 className="uppercase">{`Tên phòng: ${room.name}`}</h3>
+            <div className="flex flex-col gap-2 my-4">
+              <div className="flex gap-4">
+                <b>Địa chỉ:</b>
+                <p className="text-zinc-600">{room.address}</p>
+              </div>
+              <div className="flex gap-4">
+                <b>Giá thuê:</b>
+                <p className="text-zinc-600">{room.price} VNĐ</p>
+              </div>
+              <div className="flex gap-4">
+                <b>Ngày bắt đầu hợp đồng:</b>
+                <p className="text-zinc-600">{rentalBill?.start_date}</p>
+              </div>
+              <div className="flex gap-4">
+                <b>Ngày kết thúc hợp đồng:</b>
+                <p className="text-zinc-600">{rentalBill?.end_date}</p>
+              </div>
+              <div className="flex flex-col gap-4 bg-zinc-200 w-1/2 p-2 rounded">
+                <strong>Chi phí tháng 12</strong>
+                <strong>Tiền điện: {rentalBill?.electricity_usage} kWh</strong>
+                <strong>Tiền nước: {rentalBill?.water_usage} m³</strong>
+                <strong>Tiền phòng: {room.price} VNĐ</strong>
+                <strong>Tổng: {calculateTotal(room, rentalBill)} VNĐ</strong>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+// Hàm tính tổng chi phí
+function calculateTotal(room, rentalBill) {
+  const electricityCost = rentalBill?.electricity_usage * room.electricity_rate;
+  const waterCost = rentalBill?.water_usage * room.water_rate;
+  const rent = parseFloat(room.price);
+  return electricityCost + waterCost + rent;
+}
