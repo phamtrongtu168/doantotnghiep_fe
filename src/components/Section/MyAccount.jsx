@@ -120,6 +120,7 @@ export function RoomMe() {
     <>
       <h2 className="mb-8 text-zinc-600">Trọ của tôi</h2>
       {roomsMe.map((roomData, index) => {
+        const rentalManager = roomData;
         const room = roomData.room;
         const rentalBill = roomData.rentalBills[0]; // Giả sử chỉ lấy hóa đơn đầu tiên
 
@@ -137,14 +138,17 @@ export function RoomMe() {
               </div>
               <div className="flex gap-4">
                 <b>Ngày bắt đầu hợp đồng:</b>
-                <p className="text-zinc-600">{rentalBill?.start_date}</p>
+                <p className="text-zinc-600">{rentalManager?.start_date}</p>
               </div>
               <div className="flex gap-4">
                 <b>Ngày kết thúc hợp đồng:</b>
-                <p className="text-zinc-600">{rentalBill?.end_date}</p>
+                <p className="text-zinc-600">{rentalManager?.end_date}</p>
               </div>
               <div className="flex flex-col gap-4 bg-zinc-200 w-1/2 p-2 rounded">
-                <strong>Chi phí tháng 12</strong>
+                <strong>
+                  Chi phí từ: {rentalBill?.start_date} đến{" "}
+                  {rentalBill?.end_date}
+                </strong>
                 <strong>Tiền điện: {rentalBill?.electricity_usage} kWh</strong>
                 <strong>Tiền nước: {rentalBill?.water_usage} m³</strong>
                 <strong>Tiền phòng: {room.price} VNĐ</strong>

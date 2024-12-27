@@ -1,6 +1,16 @@
+import { useState } from "react";
 import { services, steps } from "../../data";
+import ModalConfirm from "../../components/Modal/ModalConfirm";
 
 function RepairServicePage(props) {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const handleOpenModal = () => setModalOpen(true);
+  const handleCloseModal = () => setModalOpen(false);
+  const handleConfirm = () => {
+    console.log("Đã xác nhận!");
+    setModalOpen(false);
+  };
+
   return (
     <div>
       <main>
@@ -49,7 +59,10 @@ function RepairServicePage(props) {
                   <p className="text-2xl font-bold text-center py-2">
                     {service.price}
                   </p>
-                  <button className="mt-4 w-max text-sm bg-blue-500 text-white py-2 rounded-md border-2 border-transparent  px-6 float-right cursor-pointer hover:bg-white hover:text-blue-500 hover:border-solid hover:border-2 hover:border-blue-500">
+                  <button
+                    onClick={handleOpenModal}
+                    className="mt-4 w-max text-sm bg-blue-500 text-white py-2 rounded-md border-2 border-transparent  px-6 float-right cursor-pointer hover:bg-white hover:text-blue-500 hover:border-solid hover:border-2 hover:border-blue-500"
+                  >
                     Đặt Lịch
                   </button>
                 </div>
@@ -76,6 +89,11 @@ function RepairServicePage(props) {
           </div>
         </div>
       </main>
+      <ModalConfirm
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }

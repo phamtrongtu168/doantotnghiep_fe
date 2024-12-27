@@ -1,9 +1,10 @@
+import axiosAuth from "../../utils/axiosAuth";
 import axiosPublic from "../../utils/axiosPublic";
 
 export const getAll = async () => {
   try {
-    const temp = await axiosPublic.get(`rooms`);
-    return temp?.data;
+    const temp = await axiosPublic.get(`rooms/available`);
+    return temp?.data?.data;
   } catch (e) {
     console.log(e);
     return [];
@@ -12,7 +13,7 @@ export const getAll = async () => {
 
 export const getAllByUser = async () => {
   try {
-    const temp = await axiosPublic.get(`user/rooms`);
+    const temp = await axiosAuth.get(`user/rooms`);
     return temp?.data;
   } catch (e) {
     console.log(e);

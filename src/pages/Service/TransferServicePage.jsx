@@ -1,6 +1,15 @@
+import { useState } from "react";
 import { packages, reasons, steps } from "../../data";
+import ModalConfirm from "../../components/Modal/ModalConfirm";
 
 function TransferServicePage(props) {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const handleOpenModal = () => setModalOpen(true);
+  const handleCloseModal = () => setModalOpen(false);
+  const handleConfirm = () => {
+    console.log("Đã xác nhận!");
+    setModalOpen(false);
+  };
   return (
     <div>
       <main>
@@ -54,7 +63,10 @@ function TransferServicePage(props) {
                 <p className="text-xl font-bold text-blue-600 mb-4">
                   {pkg.price}
                 </p>
-                <button className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 cursor-pointer border-0">
+                <button
+                  onClick={handleOpenModal}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 cursor-pointer border-0"
+                >
                   Chọn Gói
                 </button>
               </div>
@@ -80,8 +92,12 @@ function TransferServicePage(props) {
             ))}
           </div>
         </div>
-        ;
       </main>
+      <ModalConfirm
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }

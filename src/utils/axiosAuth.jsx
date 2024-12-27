@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const axiosAuth = axios.create({
-  baseURL: `${apiUrl}/api/auth`,
+  baseURL: `${apiUrl}/`,
 });
 
 axiosAuth.interceptors.request.use(
