@@ -1,6 +1,50 @@
+import { useQuery } from "react-query";
 import { steps } from "../../data";
+import { getAll } from "../../services/api/ServiceService";
+import { getAllByUser } from "../../services/api/RoomService";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { ServiceRequestService } from "../../services/api";
 
 function CleaningServicePage(props) {
+  const [isRoom, setIsRoom] = useState(true);
+  const { data: services } = useQuery({
+    queryKey: ["service-list"],
+    queryFn: () => getAll(),
+  });
+  const { data: roomsMe } = useQuery({
+    queryKey: ["room-me"],
+    queryFn: () => getAllByUser(),
+  });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      console.log(data);
+      await ServiceRequestService.create(data);
+      reset();
+      toast.success("Đặt lịch thành công");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleToggle = (event) => {
+    setIsRoom(event.target.checked);
+    reset();
+  };
+
+  const cleanServices = services?.filter(
+    (service) => service.service_type === "clean"
+  );
+  const firstCleanService = cleanServices?.[0];
+
   return (
     <>
       <div className="relative">
@@ -21,33 +65,59 @@ function CleaningServicePage(props) {
           Liên hệ đặt dịch vụ
         </h2>
         <div className="bg-zinc-200 p-2">
-          <form action="" className="flex flex-col gap-4 my-4 max-w-md mx-auto">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4 my-4 max-w-md mx-auto"
+          >
             <input
-              className="py-3 px-4 text-lg border rounded border-black outline-none"
-              type="text"
-              placeholder="Tên"
+              type="hidden"
+              value={firstCleanService?.id}
+              {...register("service_id")}
             />
-            <input
-              className="py-3 px-4 text-lg border rounded border-black outline-none"
-              type="text"
-              placeholder="Email"
-            />
-            <input
-              className="py-3 px-4 text-lg border rounded border-black outline-none"
-              type="text"
-              placeholder="Số điện thoại"
-            />
-            <input
-              className="py-3 px-4 text-lg border rounded border-black outline-none"
-              type="text"
-              placeholder="Điện chỉ"
-            />
-            <input
-              className="py-3 px-4 text-lg border rounded border-black outline-none"
-              type="text"
-              placeholder="Ghi chú"
-            />
-            <button className="py-2 px-10 mx-auto bg-primary text-white cursor-pointer border-none rounded text-lg w-max">
+            <label className="cursor-pointer space-x-2">
+              <input type="checkbox" checked={isRoom} onChange={handleToggle} />
+              <span>Trạng thái: {isRoom ? "Có phòng" : "Địa chỉ khác"}</span>
+            </label>
+            {isRoom && (
+              <label>
+                <b className="text-sm">Chọn phòng</b>
+                <select
+                  {...register("room_id")}
+                  className="w-full p-3 text-lg border border-gray-300 rounded outline-none"
+                >
+                  <option value="">-- Chọn phòng --</option>
+                  {roomsMe?.map((room, index) => (
+                    <option key={index} value={room?.room?.id}>
+                      {room?.room?.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+            {!isRoom && (
+              <label>
+                <b className="text-sm">Nhập địa chỉ</b>
+                <input
+                  type="text"
+                  placeholder="Nhập địa chỉ dọn dẹp"
+                  {...register("address_other")}
+                  className="w-full p-2.5 text-lg border border-gray-300 rounded outline-none"
+                />
+              </label>
+            )}
+            <label>
+              <b className="text-sm">Nhập ghi chú</b>
+              <input
+                type="text"
+                placeholder="Ghi chú"
+                {...register("description")}
+                className="w-full p-2.5 text-lg border border-gray-300 rounded outline-none"
+              />
+            </label>
+            <button
+              type="submit"
+              className="py-2 px-10 mx-auto bg-primary text-white cursor-pointer border-none rounded text-lg w-max"
+            >
               Đặt lịch
             </button>
           </form>
