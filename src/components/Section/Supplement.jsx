@@ -10,8 +10,8 @@ const Supplement = () => {
       <section className="py-8">
         <h2 className="text-center uppercase my-4 text-4xl">Tiện ích đi kèm</h2>
         <p className="text-center my-6">
-          Chúng tôi cung cấp nhiều tiện ích khác nhau bạn có thể sử dụng một cách
-          nhanh chóng và thuận lợi nhất.
+          Chúng tôi cung cấp nhiều tiện ích khác nhau bạn có thể sử dụng một
+          cách nhanh chóng và thuận lợi nhất.
         </p>
         <div className="my-4 grid grid-cols-3 gap-12">
           <div>
@@ -36,8 +36,8 @@ const Supplement = () => {
             <img className="w-full aspect-[4/3] p-12" src={item4} alt="" />
             <h3 className="uppercase text-2xl text-center mb-4">Sửa chữa</h3>
             <p>
-              Chúng tôi cung cấp xe những người thợ sữa chữa nơi ở của bạn mỗi khi
-              bạn gặp sự cố.
+              Chúng tôi cung cấp xe những người thợ sữa chữa nơi ở của bạn mỗi
+              khi bạn gặp sự cố.
             </p>
           </div>
         </div>

@@ -36,9 +36,8 @@ const TipsToStay = () => {
                   11 bước cần làm khi thuê trọ
                 </h4>
                 <p>
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Veritatis quod cum laboriosam perspiciatis quam aperiam
-                  architecto repellendus iste eum magni.
+                  Săn tìm căn hộ có thể rất thú vị nhưng cũng đầy choáng ngợp.
+                  Đơn giản hóa nhiệm vụ bằng cách tổ chức.
                 </p>
               </div>
             </div>
@@ -52,12 +51,12 @@ const TipsToStay = () => {
               />
               <div>
                 <h4 className="uppercase text-xl">
-                  11 bước cần làm khi thuê trọ
+                  Máy tính tiền thuê: Bạn nên chi bao nhiêu cho tiền thuê nhà?
                 </h4>
                 <p>
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Veritatis quod cum laboriosam perspiciatis quam aperiam
-                  architecto repellendus iste eum magni.
+                  Hãy cho chúng tôi biết thu nhập, chi phí và vị trí mong muốn
+                  của bạn. Chúng tôi sẽ giúp bạn tìm được ngân sách thuê phù
+                  hợp.
                 </p>
               </div>
             </div>
@@ -71,12 +70,11 @@ const TipsToStay = () => {
               />
               <div>
                 <h4 className="uppercase text-xl">
-                  11 bước cần làm khi thuê trọ
+                  Các thành phố tốt nhất của Hoa Kỳ cho công việc kết hợp.
                 </h4>
                 <p>
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Veritatis quod cum laboriosam perspiciatis quam aperiam
-                  architecto repellendus iste eum magni.
+                  Nơi tốt nhất cho công việc cho công việc của bạn với nhu cầu
+                  của bạn.
                 </p>
               </div>
             </div>

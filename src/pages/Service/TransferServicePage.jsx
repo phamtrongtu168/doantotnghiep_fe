@@ -1,15 +1,55 @@
 import { useState } from "react";
 import { packages, reasons, steps } from "../../data";
 import ModalConfirm from "../../components/Modal/ModalConfirm";
+import { useQuery } from "react-query";
+import { getAll } from "../../services/api/ServiceService";
+import { useForm } from "react-hook-form";
+import { getAllByUser } from "../../services/api/RoomService";
+import { ServiceRequestService } from "../../services/api";
 
 function TransferServicePage(props) {
   const [isModalOpen, setModalOpen] = useState(false);
-  const handleOpenModal = () => setModalOpen(true);
-  const handleCloseModal = () => setModalOpen(false);
-  const handleConfirm = () => {
-    console.log("Đã xác nhận!");
-    setModalOpen(false);
+  const [isRoom, setIsRoom] = useState(true);
+  const { data: services } = useQuery({
+    queryKey: ["service-list"],
+    queryFn: () => getAll(),
+  });
+  const { data: roomsMe } = useQuery({
+    queryKey: ["room-me"],
+    queryFn: () => getAllByUser(),
+  });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      console.log(data);
+      await ServiceRequestService.create(data);
+      reset();
+      setModalOpen(false);
+      toast.success("Đặt lịch thành công");
+    } catch (error) {
+      console.log(error);
+    }
   };
+  const handleToggle = (event) => {
+    setIsRoom(event.target.checked);
+    reset();
+  };
+  const handleOpenModal = (serviceId) => {
+    setValue("service_id", serviceId);
+    setModalOpen(true);
+  };
+  const handleCloseModal = () => setModalOpen(false);
+
+  const transferServices = services?.filter(
+    (service) => service.service_type === "moving"
+  );
   return (
     <div>
       <main>
@@ -53,18 +93,23 @@ function TransferServicePage(props) {
             Lựa chọn gói dịch vụ
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-300 px-32 py-10">
-            {packages.map((pkg, index) => (
+            {transferServices?.map((service, index) => (
               <div
                 key={index}
                 className="p-6 border rounded-lg text-center bg-white"
               >
-                <h3 className="font-bold mb-4">{pkg.name}</h3>
-                <p className="text-sm mb-4">{pkg.description}</p>
+                <img
+                  src={service.image}
+                  alt={service.name}
+                  className="w-full h-48 object-cover"
+                />
+                <h3 className="font-bold mb-4">{service.name}</h3>
+                <p className="text-sm mb-4">{service.description}</p>
                 <p className="text-xl font-bold text-blue-600 mb-4">
-                  {pkg.price}
+                  {service.price}
                 </p>
                 <button
-                  onClick={handleOpenModal}
+                  onClick={() => handleOpenModal(service?.id)}
                   className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 cursor-pointer border-0"
                 >
                   Chọn Gói
@@ -96,7 +141,82 @@ function TransferServicePage(props) {
       <ModalConfirm
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        onConfirm={handleConfirm}
+        title={"Đặt lịch sửa chữa"}
+        children={
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="mt-6 grid grid-cols-1 gap-4"
+          >
+            <input
+              type="hidden"
+              {...register("service_id", { required: true })}
+            />
+            {isRoom && (
+              <label>
+                <b className="text-sm">Chọn phòng</b>
+                <select
+                  {...register("room_id")}
+                  className="w-full p-2 border border-gray-300 rounded outline-none"
+                >
+                  <option value="">-- Chọn phòng --</option>
+                  {roomsMe?.map((room, index) => (
+                    <option key={index} value={room?.room?.id}>
+                      {room?.room?.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+            {!isRoom && (
+              <label>
+                <b className="text-sm">Nhập địa chỉ chuyển đi</b>
+                <input
+                  type="text"
+                  placeholder="Nhập địa chỉ chuyển đi"
+                  {...register("moving_from")}
+                  className="w-full p-2 border border-gray-300 rounded outline-none"
+                />
+              </label>
+            )}
+            <label className="cursor-pointer space-x-2">
+              <input type="checkbox" checked={isRoom} onChange={handleToggle} />
+              <span>Trạng thái: {isRoom ? "Có phòng" : "Địa chỉ khác"}</span>
+            </label>
+            <label>
+              <b className="text-sm">Nhập địa chỉ mới muốn chuyển đến</b>
+              <input
+                type="text"
+                placeholder="Nhập địa chỉ mới muốn chuyển đến"
+                {...register("moving_to")}
+                className="w-full p-2 border border-gray-300 rounded outline-none"
+              />
+            </label>
+            <label>
+              <b className="text-sm">Nhập mô tả</b>
+              <input
+                type="text"
+                placeholder="Nhập mô tả"
+                {...register("description")}
+                className="w-full p-2 border border-gray-300 rounded outline-none"
+              />
+            </label>
+            <label>
+              <b className="text-sm">Ngày thực hiện</b>
+              <input
+                type="date"
+                placeholder="Ngày thực hiện"
+                {...register("service_date")}
+                className="w-full p-2 border border-gray-300 rounded outline-none"
+              />
+            </label>
+            <button
+              type="submit"
+              className="p-2.5 bg-primary border-none text-white rounded cursor-pointer font-bold"
+            >
+              Xác nhận
+            </button>
+          </form>
+        }
       />
     </div>
   );
