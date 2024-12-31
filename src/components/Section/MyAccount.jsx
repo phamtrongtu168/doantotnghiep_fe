@@ -4,6 +4,8 @@ import { useQuery } from "react-query";
 import { getAllByLandlord, getAllByUser } from "../../services/api/RoomService";
 import ModalAddRoom from "../Modal/ModalAddRoom";
 import RoomCard from "../../ui/RoomCard";
+import axios from "axios";
+import axiosAuth from "../../utils/axiosAuth";
 
 export function AccountMe() {
   const { authData, logout } = useAuth();
@@ -182,15 +184,38 @@ export function RoomMe() {
         return "Chưa có hóa đơn";
     }
   };
-  if (!roomsMe) return null;
 
+  if (!roomsMe) return null;
+  const handlePayment = async (transaction_id, totalBill) => {
+    try {
+      // Dữ liệu yêu cầu tạo thanh toán
+      const requestData = {
+        rental_bill_id: transaction_id, // ID hóa đơn
+        amount: totalBill, // Số tiền cần thanh toán
+      };
+
+      // Gửi yêu cầu tới backend
+      const response = await axiosAuth.post(
+        "http://127.0.0.1:8000/vnpay/create-payment",
+        requestData
+      );
+
+      if (response.data && response.data.payment_url) {
+        // Chuyển hướng người dùng tới URL thanh toán của VNPAY
+        window.location.href = response.data.payment_url;
+      } else {
+        console.error("Không tìm thấy URL thanh toán.");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tạo yêu cầu thanh toán:", error);
+    }
+  };
   return (
     <div className="max-w-6xl mx-auto">
       <h2 className="text-xl font-semibold text-gray-800 mb-6">Trọ của tôi</h2>
       {roomsMe.map((roomData, idx) => {
         const { room, rentalBills } = roomData;
         const rentalBill = rentalBills[0];
-
         return (
           <div key={idx} className="bg-white shadow rounded-lg p-6 mb-6">
             <h3 className="text-lg font-semibold text-gray-800">{`Tên phòng: ${room.name}`}</h3>
@@ -237,9 +262,21 @@ export function RoomMe() {
                       <p>Tiền điện: {rentalBill.electricity_usage} kWh</p>
                       <p>Tiền nước: {rentalBill.water_usage} m³</p>
                       <p>Tiền phòng: {roomData.price} VNĐ</p>
+                      <p>Tiền phòng: {rentalBill.transaction_id} VNĐ</p>
+
                       <p className="font-medium">
                         Tổng: {calculateTotal(room, rentalBill)} VNĐ
                       </p>
+                      <button
+                        onClick={() =>
+                          handlePayment(
+                            rentalBill.transaction_id,
+                            calculateTotal(room, rentalBill)
+                          )
+                        }
+                      >
+                        Thanh toán
+                      </button>
                     </div>
                   </div>
                 ))}
