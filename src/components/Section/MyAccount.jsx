@@ -190,7 +190,7 @@ export function RoomMe() {
     try {
       // Dữ liệu yêu cầu tạo thanh toán
       const requestData = {
-        rental_bill_id: transaction_id, // ID hóa đơn
+        transaction_id: transaction_id, // ID hóa đơn
         amount: totalBill / 100, // Số tiền cần thanh toán
       };
 
