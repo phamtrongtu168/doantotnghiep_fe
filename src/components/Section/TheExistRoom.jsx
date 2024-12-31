@@ -52,7 +52,7 @@ const TheExistRoom = () => {
             className="flex scroll-hidden gap-4 justify-between my-16 "
           >
             {rooms &&
-              rooms.map((room, index) => (
+              rooms?.map((room, index) => (
                 <RoomCard
                   key={index}
                   link={`/room/${room?.id}`}

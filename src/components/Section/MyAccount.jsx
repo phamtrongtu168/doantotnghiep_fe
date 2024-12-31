@@ -257,7 +257,6 @@ export function RentalRooms() {
     queryKey: ["roomsLandlord"],
     queryFn: () => getAllByLandlord(),
   });
-
   return (
     <div>
       <div className="flex justify-between">

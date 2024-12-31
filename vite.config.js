@@ -5,7 +5,7 @@ import { visualizer } from "rollup-plugin-visualizer";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), visualizer()],
-  base: "/doantotnghiep_fe",
+  // base: "/doantotnghiep_fe",
   build: {
     rollupOptions: {
       output: {
@@ -18,11 +18,6 @@ export default defineConfig({
               .toString();
           }
         },
-      },
-    },
-    server: {
-      proxy: {
-        "/api": "http://127.0.0.1:8000",
       },
     },
   },
