@@ -4,8 +4,9 @@ import { useQuery } from "react-query";
 import { getAllByLandlord, getAllByUser } from "../../services/api/RoomService";
 import ModalAddRoom from "../Modal/ModalAddRoom";
 import RoomCard from "../../ui/RoomCard";
-import axios from "axios";
-import axiosAuth from "../../utils/axiosAuth";
+import moment from "moment";
+import { getAll } from "../../services/api/BillService";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function AccountMe() {
   const { authData, logout } = useAuth();
@@ -322,6 +323,158 @@ export function RentalRooms() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+    </div>
+  );
+}
+export function RentalManagement() {
+  const navigate = useNavigate();
+  const { data: roomsLandlord = [] } = useQuery({
+    queryKey: ["roomsLandlord"],
+    queryFn: () => getAllByLandlord(),
+  });
+
+  const formatCurrency = (value) => {
+    return value
+      ? new Intl.NumberFormat("vi-VN").format(value) + "đ"
+      : "Chưa có giá";
+  };
+
+  const formatDateRange = (start, end) =>
+    start && end
+      ? `${moment(start).format("DD/MM/YYYY")} đến ${moment(end).format(
+          "DD/MM/YYYY"
+        )}`
+      : "Chưa có ngày";
+
+  const filteredRooms = roomsLandlord.filter(
+    (room) => room?.rental_management?.length > 0
+  );
+
+  const handleBill = (roomId) => {
+    navigate(`/my-account?position=5&roomId=${roomId}`);
+  };
+  return (
+    <div>
+      <h1>Quản lý cho thuê</h1>
+      <div className="flex flex-col gap-4 mt-4">
+        {filteredRooms?.map((room, index) => (
+          <div key={index}>
+            <h3 className="font-normal">
+              Phòng: {room.name || `Phòng ${index + 1}`}
+            </h3>
+            <div className="w-1/2 border-2 border-solid border-zinc-400 p-4 rounded">
+              <div className="grid grid-cols-2 gap-4">
+                <p>
+                  Giá: <span>{formatCurrency(room.price)}</span>
+                </p>
+                <p>
+                  Người thuê hiện tại:{" "}
+                  <span>
+                    {room?.rental_management[0]?.tenant?.name ||
+                      "Chưa có người thuê"}
+                  </span>
+                </p>
+                <p>
+                  Địa chỉ: <span>{room.address || "Chưa có địa chỉ"}</span>
+                </p>
+                <p>
+                  Số điện thoại:{" "}
+                  <span>
+                    {room?.rental_management[0]?.tenant?.phone ||
+                      "Chưa có số điện thoại"}
+                  </span>
+                </p>
+                <p>
+                  Hợp đồng từ:{" "}
+                  <span>
+                    {formatDateRange(
+                      room?.rental_management[0]?.start_date,
+                      room?.rental_management[0]?.end_date
+                    )}
+                  </span>
+                </p>
+              </div>
+              <button
+                onClick={() => handleBill(room?.id)}
+                className="bg-primary cursor-pointer text-white border-none p-2.5 font-bold rounded mt-4 ml-auto block"
+              >
+                Hóa đơn thanh toán
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+export function BillManagement() {
+  const location = useLocation(); // Lấy thông tin URL hiện tại
+  const searchParams = new URLSearchParams(location.search); // Phân tích query string
+  const roomId = searchParams.get("roomId");
+  const { data: billLandlords } = useQuery({
+    queryKey: ["bill-landlords"],
+    queryFn: () => getAll(roomId),
+  });
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "paid":
+        return "text-green-600";
+      case "unpaid":
+        return "text-red-600";
+      default:
+        return "text-gray-600";
+    }
+  };
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case "paid":
+        return "Đã thanh toán";
+      case "unpaid":
+        return "Chưa thanh toán";
+      default:
+        return "Chưa có hóa đơn";
+    }
+  };
+  if (!billLandlords) return null;
+
+  return (
+    <div className="max-w-6xl mx-auto">
+      <div className="bg-white shadow rounded-lg p-6 mb-6">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-zinc-600">{`Hóa đơn thanh toán phòng: ${billLandlords?.room?.name}`}</h3>
+          <button className="bg-primary cursor-pointer font-bold text-white rounded-lg px-4 py-2.5 mt-4 border-none">
+            Thêm hóa đơn
+          </button>
+        </div>
+        <div className="mt-4 space-y-3">
+          {billLandlords?.bills?.map((rentalBill, billIdx) => (
+            <div key={billIdx} className="p-4 bg-gray-100 rounded-lg mt-3">
+              <p className="text-gray-800">
+                <b>Trạng thái:</b>{" "}
+                <span
+                  className={`font-semibold ${getStatusColor(
+                    rentalBill?.status
+                  )}`}
+                >
+                  {getStatusLabel(rentalBill?.status)}
+                </span>
+              </p>
+              <div className="mt-3 space-y-2 text-gray-700">
+                <p>
+                  Hóa đơn từ: {rentalBill?.start_date} đến{" "}
+                  {rentalBill?.end_date}
+                </p>
+                <p>Tiền điện: {rentalBill?.electricity_usage} kWh</p>
+                <p>Tiền nước: {rentalBill?.water_usage} m³</p>
+                <p>Tiền phòng: {billLandlords?.room?.price} VNĐ</p>
+                <p className="font-medium">
+                  Tổng: {calculateTotal(billLandlords?.room, rentalBill)} VNĐ
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
