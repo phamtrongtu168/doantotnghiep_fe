@@ -7,6 +7,7 @@ import RoomCard from "../../ui/RoomCard";
 import moment from "moment";
 import { getAll } from "../../services/api/BillService";
 import { useLocation, useNavigate } from "react-router-dom";
+import axiosAuth from "../../utils/axiosAuth";
 
 export function AccountMe() {
   const { authData, logout } = useAuth();
