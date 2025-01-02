@@ -4,7 +4,7 @@ import Supplement from "../../components/Section/Supplement";
 import TipsToStay from "../../components/Section/TipsToStay";
 import BannerHomeSilder from "../../components/Section/BannerHomeSilder";
 import AboutUs from "../../components/Section/AboutUs";
-import axiosAuth from "../../axios/axiosAuth";
+import axiosAuth from "../../utils/axiosAuth";
 
 function HomePage() {
   useEffect(() => {
