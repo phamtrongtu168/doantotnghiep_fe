@@ -9,11 +9,8 @@ export const TaskCard = ({
   movingFrom,
   requestDate,
   status,
+  children,
 }) => {
-  const [taskStatus, setTaskStatus] = useState(status);
-  const handleStatusChange = (event) => {
-    setTaskStatus(event.target.value);
-  };
   return (
     <div className="max-w-sm rounded overflow-hidden shadow-lg p-4 bg-white">
       <div className="px-6 py-4">
@@ -29,18 +26,9 @@ export const TaskCard = ({
         <p className="text-gray-700 text-base">Chuyển đến: {movingFrom}</p>
         <p className="text-gray-700 text-base">Ngày yêu cầu: {requestDate}</p>
         <div className="text-gray-700 text-base">
-          <label htmlFor="status">Trạng thái: </label>
-          <select
-            id="status"
-            value={taskStatus}
-            onChange={handleStatusChange}
-            className={`border p-2 rounded cursor-pointer`}
-          >
-            <option value="pending">Pending</option>
-            <option value="in_progress">In Progress</option>
-            <option value="completed">Completed</option>
-          </select>
+          <label htmlFor="status">Trạng thái: {status}</label>
         </div>
+        {children}{" "}
       </div>
     </div>
   );

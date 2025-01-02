@@ -13,7 +13,11 @@ import { getAll as getAllServiceRequest } from "../../services/api/ServiceReques
 import ModalConfirm from "../Modal/ModalConfirm";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { BillService } from "../../services/api";
+import {
+  BillService,
+  RentalManagementService,
+  ServiceRequestService,
+} from "../../services/api";
 
 export function AccountMe() {
   const { authData, logout } = useAuth();
@@ -456,7 +460,7 @@ export function RentalRooms() {
 }
 export function RentalManagement() {
   const navigate = useNavigate();
-  const { data: roomsLandlord = [] } = useQuery({
+  const { data: roomsLandlord = [], refetch } = useQuery({
     queryKey: ["roomsLandlord"],
     queryFn: () => getAllByLandlord(),
   });
@@ -480,6 +484,15 @@ export function RentalManagement() {
 
   const handleBill = (roomId) => {
     navigate(`/my-account?position=5&roomId=${roomId}`);
+  };
+  const handleConfirmation = async (roomId) => {
+    try {
+      const res = await RentalManagementService.updateConfirm(roomId);
+      console.log(res);
+      refetch();
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <div>
@@ -534,6 +547,16 @@ export function RentalManagement() {
                   </span>
                 </p>
               </div>
+              {room?.rental_management[0]?.status === "pending" && (
+                <button
+                  onClick={() =>
+                    handleConfirmation(room?.rental_management[0]?.id)
+                  }
+                  className=" cursor-pointer text-black border-spacing-1 p-2.5 font-bold rounded mt-4 mr-auto block"
+                >
+                  Xác nhận cho thuê
+                </button>
+              )}
               <button
                 onClick={() => handleBill(room?.id)}
                 className="bg-primary cursor-pointer text-white border-none p-2.5 font-bold rounded mt-4 ml-auto block"
