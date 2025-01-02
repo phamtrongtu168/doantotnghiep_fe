@@ -41,7 +41,9 @@ function HomePage() {
           "http://127.0.0.1:8000/vnpay/return",
           {
             params: {
-              transaction_id: transactionId,
+              vnp_TxnRef: transactionId,
+              vnp_TransactionStatus: transactionStatus,
+              vnp_ResponseCode: responseCode,
             },
           }
         );
