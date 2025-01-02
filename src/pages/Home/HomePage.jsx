@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import TheExistRoom from "../../components/Section/TheExistRoom";
 import Supplement from "../../components/Section/Supplement";
 import TipsToStay from "../../components/Section/TipsToStay";
@@ -7,6 +7,10 @@ import AboutUs from "../../components/Section/AboutUs";
 import axiosAuth from "../../utils/axiosAuth";
 
 function HomePage() {
+  // State để quản lý trạng thái thanh toán
+  const [paymentProcessed, setPaymentProcessed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   useEffect(() => {
     // Kiểm tra xem có chạy trong trình duyệt không
     if (typeof window !== "undefined") {
@@ -28,6 +32,9 @@ function HomePage() {
     transactionStatus,
     responseCode
   ) => {
+    if (paymentProcessed) return; // Nếu đã xử lý thanh toán, không gửi yêu cầu nữa
+    setPaymentProcessed(true);
+
     try {
       if (transactionStatus === "00" && responseCode === "00") {
         const response = await axiosAuth.get(
@@ -39,13 +46,10 @@ function HomePage() {
           }
         );
 
-        // Log the response to confirm success structure
-        console.log("Payment Response:", response.data);
-
-        // Check if the backend returned success
+        // Kiểm tra nếu backend trả về kết quả thành công
         if (response.data.success) {
           alert("Thanh toán thành công!");
-          // Reload the page or update UI as necessary
+          // Cập nhật giao diện hoặc làm mới trang nếu cần
           window.location.reload();
         } else {
           alert("Có lỗi khi cập nhật trạng thái thanh toán. Vui lòng thử lại.");
@@ -54,11 +58,13 @@ function HomePage() {
         alert("Thanh toán thất bại.");
       }
 
-      // Clear URL parameters after processing
+      // Xóa các tham số khỏi URL sau khi xử lý
       window.history.replaceState(null, "", window.location.pathname);
     } catch (error) {
       console.error("Lỗi khi gửi yêu cầu tới server:", error);
       alert("Có lỗi khi gửi yêu cầu tới server. Vui lòng thử lại.");
+    } finally {
+      setPaymentProcessed(false); // Đặt lại trạng thái khi kết thúc
     }
   };
 
