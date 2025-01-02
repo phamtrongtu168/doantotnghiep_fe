@@ -39,9 +39,13 @@ function HomePage() {
           }
         );
 
+        // Log the response to confirm success structure
+        console.log("Payment Response:", response.data);
+
+        // Check if the backend returned success
         if (response.data.success) {
           alert("Thanh toán thành công!");
-          // Thực hiện reload dữ liệu hoặc cập nhật giao diện nếu cần
+          // Reload the page or update UI as necessary
           window.location.reload();
         } else {
           alert("Có lỗi khi cập nhật trạng thái thanh toán. Vui lòng thử lại.");
@@ -50,10 +54,11 @@ function HomePage() {
         alert("Thanh toán thất bại.");
       }
 
-      // Xóa các tham số khỏi URL sau khi xử lý
+      // Clear URL parameters after processing
       window.history.replaceState(null, "", window.location.pathname);
     } catch (error) {
       console.error("Lỗi khi gửi yêu cầu tới server:", error);
+      alert("Có lỗi khi gửi yêu cầu tới server. Vui lòng thử lại.");
     }
   };
 
