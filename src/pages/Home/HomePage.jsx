@@ -6,17 +6,20 @@ import BannerHomeSilder from "../../components/Section/BannerHomeSilder";
 import AboutUs from "../../components/Section/AboutUs";
 import axiosAuth from "../../axios/axiosAuth";
 
-function HomePage(props) {
+function HomePage() {
   useEffect(() => {
-    // Lấy tham số từ URL
-    const params = new URLSearchParams(window.location.search);
-    const transactionStatus = params.get("vnp_TransactionStatus");
-    const responseCode = params.get("vnp_ResponseCode");
-    const transactionId = params.get("vnp_TxnRef");
+    // Kiểm tra xem có chạy trong trình duyệt không
+    if (typeof window !== "undefined") {
+      // Lấy tham số từ URL
+      const params = new URLSearchParams(window.location.search);
+      const transactionStatus = params.get("vnp_TransactionStatus");
+      const responseCode = params.get("vnp_ResponseCode");
+      const transactionId = params.get("vnp_TxnRef");
 
-    if (transactionStatus && responseCode && transactionId) {
-      // Gửi yêu cầu xác nhận thanh toán tới backend
-      handlePaymentReturn(transactionId, transactionStatus, responseCode);
+      if (transactionStatus && responseCode && transactionId) {
+        // Gửi yêu cầu xác nhận thanh toán tới backend
+        handlePaymentReturn(transactionId, transactionStatus, responseCode);
+      }
     }
   }, []);
 
@@ -30,13 +33,16 @@ function HomePage(props) {
         const response = await axiosAuth.get(
           "http://127.0.0.1:8000/vnpay/return",
           {
-            transaction_id: transactionId,
+            params: {
+              transaction_id: transactionId,
+            },
           }
         );
 
         if (response.data.success) {
           alert("Thanh toán thành công!");
-          // Thực hiện reload dữ liệu nếu cần
+          // Thực hiện reload dữ liệu hoặc cập nhật giao diện nếu cần
+          window.location.reload();
         } else {
           alert("Có lỗi khi cập nhật trạng thái thanh toán. Vui lòng thử lại.");
         }
@@ -50,6 +56,7 @@ function HomePage(props) {
       console.error("Lỗi khi gửi yêu cầu tới server:", error);
     }
   };
+
   return (
     <div className="px-12">
       <BannerHomeSilder />
