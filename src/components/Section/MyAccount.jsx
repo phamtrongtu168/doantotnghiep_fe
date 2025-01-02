@@ -194,36 +194,6 @@ export function RoomMe() {
     }
   };
 
-  // Hàm xử lý kết quả thanh toán từ VNPAY
-  const handlePaymentReturn = async () => {
-    const params = new URLSearchParams(window.location.search);
-
-    if (params.get("vnp_TransactionStatus")) {
-      try {
-        // Gửi thông tin kết quả thanh toán về backend
-        const response = await axiosAuth.get(
-          "http://127.0.0.1:8000/vnpay/return",
-          Object.fromEntries(params)
-        );
-
-        if (response.data.success) {
-          alert("Thanh toán thành công!");
-          // Tải lại dữ liệu phòng để cập nhật trạng thái
-          window.location.href = "/room-me"; // Hoặc sử dụng queryClient.invalidateQueries(["room-me"]);
-        } else {
-          alert("Thanh toán thất bại. Vui lòng thử lại.");
-        }
-      } catch (error) {
-        console.error("Lỗi xử lý kết quả thanh toán:", error);
-      }
-    }
-  };
-
-  // Gọi hàm xử lý khi component được mount
-  React.useEffect(() => {
-    handlePaymentReturn();
-  }, []);
-
   const handlePayment = async (transaction_id, totalBill) => {
     try {
       // Dữ liệu yêu cầu tạo thanh toán
