@@ -8,3 +8,12 @@ export const create = async (item) => {
     throw e;
   }
 };
+export const updateConfirm = async (id) => {
+  try {
+    const temp = await axiosPublic.put(`/rental-management/${id}/confirm`);
+    return temp?.data;
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};

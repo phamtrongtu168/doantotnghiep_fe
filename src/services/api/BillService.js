@@ -8,3 +8,12 @@ export const getAll = async (room_id = "") => {
     return null;
   }
 };
+export const create = async (item) => {
+  try {
+    const temp = await axiosAuth.post(`/rental-bills`, item);
+    return temp?.data;
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};

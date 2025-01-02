@@ -8,3 +8,12 @@ export const create = async (item) => {
     throw e;
   }
 };
+export const getAll = async () => {
+  try {
+    const temp = await axiosAuth.get(`/staff/service-requests`);
+    return temp?.data;
+  } catch (e) {
+    console.log(e);
+    return [];
+  }
+};

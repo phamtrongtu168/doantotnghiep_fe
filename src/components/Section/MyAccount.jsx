@@ -5,9 +5,15 @@ import { getAllByLandlord, getAllByUser } from "../../services/api/RoomService";
 import ModalAddRoom from "../Modal/ModalAddRoom";
 import RoomCard from "../../ui/RoomCard";
 import moment from "moment";
-import { getAll } from "../../services/api/BillService";
+import { getAll as getAllBill } from "../../services/api/BillService";
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosAuth from "../../utils/axiosAuth";
+import { TaskCard } from "../../ui/TaskCard";
+import { getAll as getAllServiceRequest } from "../../services/api/ServiceRequestService";
+import ModalConfirm from "../Modal/ModalConfirm";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { BillService } from "../../services/api";
 
 export function AccountMe() {
   const { authData, logout } = useAuth();
@@ -160,12 +166,12 @@ export function AccountMe() {
     </>
   );
 }
-
 export function RoomMe() {
   const { data: roomsMe } = useQuery({
     queryKey: ["room-me"],
     queryFn: getAllByUser,
   });
+
   const getStatusColor = (status) => {
     switch (status) {
       case "paid":
@@ -176,6 +182,7 @@ export function RoomMe() {
         return "text-gray-600";
     }
   };
+
   const getStatusLabel = (status) => {
     switch (status) {
       case "paid":
@@ -187,7 +194,36 @@ export function RoomMe() {
     }
   };
 
-  if (!roomsMe) return null;
+  // Hàm xử lý kết quả thanh toán từ VNPAY
+  const handlePaymentReturn = async () => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("vnp_TransactionStatus")) {
+      try {
+        // Gửi thông tin kết quả thanh toán về backend
+        const response = await axiosAuth.get(
+          "http://127.0.0.1:8000/vnpay/return",
+          Object.fromEntries(params)
+        );
+
+        if (response.data.success) {
+          alert("Thanh toán thành công!");
+          // Tải lại dữ liệu phòng để cập nhật trạng thái
+          window.location.href = "/room-me"; // Hoặc sử dụng queryClient.invalidateQueries(["room-me"]);
+        } else {
+          alert("Thanh toán thất bại. Vui lòng thử lại.");
+        }
+      } catch (error) {
+        console.error("Lỗi xử lý kết quả thanh toán:", error);
+      }
+    }
+  };
+
+  // Gọi hàm xử lý khi component được mount
+  React.useEffect(() => {
+    handlePaymentReturn();
+  }, []);
+
   const handlePayment = async (transaction_id, totalBill) => {
     try {
       // Dữ liệu yêu cầu tạo thanh toán
@@ -212,35 +248,28 @@ export function RoomMe() {
       console.error("Lỗi khi tạo yêu cầu thanh toán:", error);
     }
   };
+
+  if (!roomsMe) return null;
+
   return (
     <div className="max-w-6xl mx-auto">
       <h2 className="text-xl font-semibold text-gray-800 mb-6">Trọ của tôi</h2>
       {roomsMe.map((roomData, idx) => {
         const { room, rentalBills } = roomData;
-        const rentalBill = rentalBills[0];
+
         return (
           <div key={idx} className="bg-white shadow rounded-lg p-6 mb-6">
             <h3 className="text-lg font-semibold text-gray-800">{`Tên phòng: ${room.name}`}</h3>
             <div className="mt-4 space-y-3">
-              {[
-                { label: "Địa chỉ", value: room.address },
-                { label: "Giá thuê", value: `${roomData.rental_price} VNĐ` },
-                {
-                  label: "Ngày bắt đầu hợp đồng",
-                  value: roomData?.start_date,
-                },
-                {
-                  label: "Ngày kết thúc hợp đồng",
-                  value: roomData?.end_date,
-                },
-              ].map(({ label, value }, idx) => (
-                <div key={idx} className="flex justify-between">
-                  <span className="font-medium text-gray-600">{label}:</span>
-                  <span className="text-gray-700">{value}</span>
-                </div>
-              ))}
+              {[{ label: "Địa chỉ", value: room.address }].map(
+                ({ label, value }, idx) => (
+                  <div key={idx} className="flex justify-between">
+                    <span className="font-medium text-gray-600">{label}:</span>
+                    <span className="text-gray-700">{value}</span>
+                  </div>
+                )
+              )}
               {rentalBills &&
-                rentalBills.length > 0 &&
                 rentalBills.map((rentalBill, billIdx) => (
                   <div
                     key={billIdx}
@@ -263,9 +292,7 @@ export function RoomMe() {
                       </p>
                       <p>Tiền điện: {rentalBill.electricity_usage} kWh</p>
                       <p>Tiền nước: {rentalBill.water_usage} m³</p>
-                      <p>Tiền phòng: {roomData.price} VNĐ</p>
                       <p>Tiền phòng: {rentalBill.transaction_id} VNĐ</p>
-
                       <p className="font-medium">
                         Tổng: {calculateTotal(room, rentalBill)} VNĐ
                       </p>
@@ -289,6 +316,136 @@ export function RoomMe() {
     </div>
   );
 }
+
+// export function RoomMe() {
+//   const { data: roomsMe } = useQuery({
+//     queryKey: ["room-me"],
+//     queryFn: getAllByUser,
+//   });
+//   const getStatusColor = (status) => {
+//     switch (status) {
+//       case "paid":
+//         return "text-green-600";
+//       case "unpaid":
+//         return "text-red-600";
+//       default:
+//         return "text-gray-600";
+//     }
+//   };
+//   const getStatusLabel = (status) => {
+//     switch (status) {
+//       case "paid":
+//         return "Đã thanh toán";
+//       case "unpaid":
+//         return "Chưa thanh toán";
+//       default:
+//         return "Chưa có hóa đơn";
+//     }
+//   };
+
+//   if (!roomsMe) return null;
+//   const handlePayment = async (transaction_id, totalBill) => {
+//     try {
+//       // Dữ liệu yêu cầu tạo thanh toán
+//       const requestData = {
+//         transaction_id: transaction_id, // ID hóa đơn
+//         amount: totalBill / 100, // Số tiền cần thanh toán
+//       };
+
+//       // Gửi yêu cầu tới backend
+//       const response = await axiosAuth.post(
+//         "http://127.0.0.1:8000/vnpay/create-payment",
+//         requestData
+//       );
+
+//       if (response.data && response.data.payment_url) {
+//         // Chuyển hướng người dùng tới URL thanh toán của VNPAY
+//         window.location.href = response.data.payment_url;
+//       } else {
+//         console.error("Không tìm thấy URL thanh toán.");
+//       }
+//     } catch (error) {
+//       console.error("Lỗi khi tạo yêu cầu thanh toán:", error);
+//     }
+//   };
+
+//   return (
+//     <div className="max-w-6xl mx-auto">
+//       <h2 className="text-xl font-semibold text-gray-800 mb-6">Trọ của tôi</h2>
+//       {roomsMe.map((roomData, idx) => {
+//         const { room, rentalBills } = roomData;
+//         const rentalBill = rentalBills[0];
+//         return (
+//           <div key={idx} className="bg-white shadow rounded-lg p-6 mb-6">
+//             <h3 className="text-lg font-semibold text-gray-800">{`Tên phòng: ${room.name}`}</h3>
+//             <div className="mt-4 space-y-3">
+//               {[
+//                 { label: "Địa chỉ", value: room.address },
+//                 { label: "Giá thuê", value: `${roomData.rental_price} VNĐ` },
+//                 {
+//                   label: "Ngày bắt đầu hợp đồng",
+//                   value: roomData?.start_date,
+//                 },
+//                 {
+//                   label: "Ngày kết thúc hợp đồng",
+//                   value: roomData?.end_date,
+//                 },
+//               ].map(({ label, value }, idx) => (
+//                 <div key={idx} className="flex justify-between">
+//                   <span className="font-medium text-gray-600">{label}:</span>
+//                   <span className="text-gray-700">{value}</span>
+//                 </div>
+//               ))}
+//               {rentalBills &&
+//                 rentalBills.length > 0 &&
+//                 rentalBills.map((rentalBill, billIdx) => (
+//                   <div
+//                     key={billIdx}
+//                     className="p-4 bg-gray-100 rounded-lg mt-3"
+//                   >
+//                     <p className="text-gray-800">
+//                       <b>Trạng thái:</b>{" "}
+//                       <span
+//                         className={`font-semibold ${getStatusColor(
+//                           rentalBill.status
+//                         )}`}
+//                       >
+//                         {getStatusLabel(rentalBill.status)}
+//                       </span>
+//                     </p>
+//                     <div className="mt-3 space-y-2 text-gray-700">
+//                       <p>
+//                         Hóa đơn từ: {rentalBill.start_date} đến{" "}
+//                         {rentalBill.end_date}
+//                       </p>
+//                       <p>Tiền điện: {rentalBill.electricity_usage} kWh</p>
+//                       <p>Tiền nước: {rentalBill.water_usage} m³</p>
+//                       <p>Tiền phòng: {roomData.price} VNĐ</p>
+//                       <p>Tiền phòng: {rentalBill.transaction_id} VNĐ</p>
+
+//                       <p className="font-medium">
+//                         Tổng: {calculateTotal(room, rentalBill)} VNĐ
+//                       </p>
+//                       <button
+//                         onClick={() =>
+//                           handlePayment(
+//                             rentalBill.transaction_id,
+//                             calculateTotal(room, rentalBill)
+//                           )
+//                         }
+//                       >
+//                         Thanh toán
+//                       </button>
+//                     </div>
+//                   </div>
+//                 ))}
+//             </div>
+//           </div>
+//         );
+//       })}
+//     </div>
+//   );
+// }
 
 export function RentalRooms() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -394,6 +551,18 @@ export function RentalManagement() {
                     )}
                   </span>
                 </p>
+                <p>
+                  Trạng thái:{" "}
+                  <span>
+                    {room?.rental_management[0]?.status === "active"
+                      ? "Đang cho thuê"
+                      : room?.rental_management[0]?.status === "pending"
+                      ? "Chờ xử lý"
+                      : room?.rental_management[0]?.status === "completed"
+                      ? "Đã hoàn thành"
+                      : "Chưa có trạng thái"}
+                  </span>
+                </p>
               </div>
               <button
                 onClick={() => handleBill(room?.id)}
@@ -409,13 +578,38 @@ export function RentalManagement() {
   );
 }
 export function BillManagement() {
+  const [isModal, setIsModal] = useState(false);
   const location = useLocation(); // Lấy thông tin URL hiện tại
   const searchParams = new URLSearchParams(location.search); // Phân tích query string
   const roomId = searchParams.get("roomId");
   const { data: billLandlords } = useQuery({
     queryKey: ["bill-landlords"],
-    queryFn: () => getAll(roomId),
+    queryFn: () => getAllBill(roomId),
+    refetchOnMount: true,
   });
+  const { data: roomsLandlord = [] } = useQuery({
+    queryKey: ["roomsLandlord"],
+    queryFn: () => getAllByLandlord(),
+  });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      console.log(data);
+      await BillService.create(data);
+      reset();
+      toast.success("Thêm hóa đơn thành công");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case "paid":
@@ -436,14 +630,17 @@ export function BillManagement() {
         return "Chưa có hóa đơn";
     }
   };
-  if (!billLandlords) return null;
+  // if (!billLandlords) return null;
 
   return (
     <div className="max-w-6xl mx-auto">
       <div className="bg-white shadow rounded-lg p-6 mb-6">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold text-zinc-600">{`Hóa đơn thanh toán phòng: ${billLandlords?.room?.name}`}</h3>
-          <button className="bg-primary cursor-pointer font-bold text-white rounded-lg px-4 py-2.5 mt-4 border-none">
+          <button
+            onClick={() => setIsModal(true)}
+            className="bg-primary cursor-pointer font-bold text-white rounded-lg px-4 py-2.5 mt-4 border-none"
+          >
             Thêm hóa đơn
           </button>
         </div>
@@ -475,7 +672,102 @@ export function BillManagement() {
             </div>
           ))}
         </div>
+        <ModalConfirm
+          isOpen={isModal}
+          onClose={() => setIsModal(false)}
+          title={"Hóa đơn"}
+          children={
+            <>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="mt-6 grid grid-cols-1 gap-4"
+              >
+                <label>
+                  <b className="text-sm">Chọn phòng đã thuê</b>
+                  <select
+                    {...register("rental_id")}
+                    className="w-full p-2 border border-gray-300 rounded outline-none"
+                  >
+                    <option value="">-- Chọn phòng đã thuê --</option>
+                    {roomsLandlord?.map((room, index) => (
+                      <option key={index} value={room?.id}>
+                        {room?.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <b className="text-sm">Ngày bắt đầu</b>
+                  <input
+                    type="date"
+                    placeholder="Ngày bắt đầu"
+                    {...register("start_date")}
+                    className="w-full p-2 border border-gray-300 rounded outline-none"
+                  />
+                </label>
+                <label>
+                  <b className="text-sm">Ngày kết thúc</b>
+                  <input
+                    type="date"
+                    placeholder="Ngày kết thúc"
+                    {...register("end_date")}
+                    className="w-full p-2 border border-gray-300 rounded outline-none"
+                  />
+                </label>
+                <label>
+                  <b className="text-sm">Số điện sử dụng</b>
+                  <input
+                    type="number"
+                    placeholder="Số điện sử dụng"
+                    {...register("electricity_usage")}
+                    className="w-full p-2 border border-gray-300 rounded outline-none"
+                  />
+                </label>
+                <label>
+                  <b className="text-sm">Số nước sử dụng</b>
+                  <input
+                    type="number"
+                    placeholder="Số nước sử dụng"
+                    {...register("water_usage")}
+                    className="w-full p-2 border border-gray-300 rounded outline-none"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="p-2.5 bg-primary border-none text-white rounded cursor-pointer font-bold"
+                >
+                  Thêm hóa đơn
+                </button>
+              </form>
+            </>
+          }
+        />
       </div>
+    </div>
+  );
+}
+
+export function TaskList() {
+  const { data: tasks } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: getAllServiceRequest,
+  });
+  return (
+    <div className="grid grid-cols-4 gap-4">
+      {tasks?.map((task, index) => (
+        <TaskCard
+          key={index}
+          taskId={task?.id}
+          room={task?.room}
+          service={task?.service}
+          address={task?.address}
+          movingFrom={task?.moving_from}
+          movingTo={task?.moving_to}
+          requestDate={task?.request_date}
+          user={task?.user}
+          status={task?.status}
+        />
+      ))}
     </div>
   );
 }
