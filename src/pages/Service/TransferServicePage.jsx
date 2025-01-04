@@ -141,7 +141,7 @@ function TransferServicePage(props) {
       <ModalConfirm
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={"Đặt lịch sửa chữa"}
+        title={"Đặt chuyển trọ"}
         children={
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -180,7 +180,9 @@ function TransferServicePage(props) {
             )}
             <label className="cursor-pointer space-x-2">
               <input type="checkbox" checked={isRoom} onChange={handleToggle} />
-              <span>Trạng thái: {isRoom ? "Có phòng" : "Địa chỉ khác"}</span>
+              <span>
+                Nơi chuyển đi: {isRoom ? "Trọ của tôi" : "Trọ của tôi"}
+              </span>
             </label>
             <label>
               <b className="text-sm">Nhập địa chỉ mới muốn chuyển đến</b>

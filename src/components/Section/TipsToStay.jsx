@@ -27,7 +27,7 @@ const TipsToStay = () => {
           <Link to="/post/1">
             <div className="flex gap-4 p-4 ">
               <img
-                className="house-frame w-1/2 aspect-square"
+                className="house-frame w-1/2 aspect-square max-w-40"
                 src={tips1}
                 alt=""
               />
@@ -45,7 +45,7 @@ const TipsToStay = () => {
           <Link to="/post/2">
             <div className="flex gap-4 p-4 ">
               <img
-                className="house-frame w-1/2 aspect-square"
+                className="house-frame w-1/2 aspect-square max-w-40"
                 src={tips2}
                 alt=""
               />
@@ -64,17 +64,17 @@ const TipsToStay = () => {
           <Link to="/post/3">
             <div className="flex gap-4 p-4 ">
               <img
-                className="house-frame w-1/2 aspect-square"
+                className="house-frame w-1/2 aspect-square max-w-40"
                 src={tips3}
                 alt=""
               />
               <div>
                 <h4 className="uppercase text-xl">
-                  Các thành phố tốt nhất của Hoa Kỳ cho công việc kết hợp.
+                  Cách Lựa Chọn Nơi Ở Thích Hợp Cho Công Việc Và Sinh Sống
                 </h4>
                 <p>
-                  Nơi tốt nhất cho công việc cho công việc của bạn với nhu cầu
-                  của bạn.
+                  Lựa chọn đúng đắn từ ban đầu giúp bạn tiết kiệm thời gian và
+                  tiền bạc.
                 </p>
               </div>
             </div>

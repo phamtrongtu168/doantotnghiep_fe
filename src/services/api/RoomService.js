@@ -55,7 +55,9 @@ export const getById = async (id) => {
 
 export const create = async (item) => {
   try {
-    const temp = await axiosAuth.post(`/rooms`, item);
+    const temp = await axiosAuth.post(`/rooms`, item, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return temp?.data;
   } catch (e) {
     throw e;

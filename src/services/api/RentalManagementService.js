@@ -17,3 +17,12 @@ export const updateConfirm = async (id) => {
     throw e;
   }
 };
+export const update = async (id, item) => {
+  try {
+    const temp = await axiosPublic.put(`/rental-management/${id}`, item);
+    return temp?.data;
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};

@@ -17,6 +17,7 @@ import { useParams } from "react-router-dom";
 import { getById } from "../../services/api/RoomService";
 import { useForm } from "react-hook-form";
 import { RentalManagementService } from "../../services/api";
+import { toast } from "react-toastify";
 function RoomDetailPage(props) {
   const [user, setUser] = useState(null);
   const { id } = useParams();
@@ -67,8 +68,7 @@ function RoomDetailPage(props) {
 
         data.end_date = endDate.toISOString().split("T")[0]; // Chuyển đổi ngày thành định dạng YYYY-MM-DD
         const res = RentalManagementService.create(data);
-        console.log(res);
-        console.log(data);
+        toast.success("Đã gửi yêu cầu thuê phòng! + ");
       }
     } catch (error) {
       console.error(error);

@@ -3,6 +3,7 @@ import item2 from "../../assets/images/cleaner-icon.png";
 import item3 from "../../assets/images/moving-icon.png";
 import item4 from "../../assets/images/repair-icon.png";
 import { Element } from "react-scroll";
+import { Link } from "react-router-dom";
 
 const Supplement = () => {
   return (
@@ -15,8 +16,10 @@ const Supplement = () => {
         </p>
         <div className="my-4 grid grid-cols-3 gap-12">
           <div>
-            <img className="w-full aspect-[4/3] p-12" src={item2} alt="" />
-            <h3 className="uppercase text-2xl text-center mb-4">Dọn dẹp</h3>
+            <Link to={"clean-service"}>
+              <img className="w-full aspect-[4/3] p-12" src={item2} alt="" />
+              <h3 className="uppercase text-2xl text-center mb-4">Dọn dẹp</h3>
+            </Link>
             <p>
               Chúng tôi cung cấp dịch vụ dọn dẹp để có thể dọn dẹp và sắp xếp
               không gian sống của bạn 1 cách sạch sẽ tối ưu về thời gian và kinh
@@ -24,8 +27,12 @@ const Supplement = () => {
             </p>
           </div>
           <div>
-            <img className="w-full aspect-[4/3] p-12" src={item3} alt="" />
-            <h3 className="uppercase text-2xl text-center mb-4">Chuyển trọ</h3>
+            <Link to={"/transfer-service"}>
+              <img className="w-full aspect-[4/3] p-12" src={item3} alt="" />
+              <h3 className="uppercase text-2xl text-center mb-4">
+                Chuyển trọ
+              </h3>
+            </Link>
             <p>
               Chúng tôi cung cấp dịch vụ dọn dẹp để có thể dọn dẹp và sắp xếp
               không gian sống của bạn 1 cách sạch sẽ tối ưu về thời gian và kinh
@@ -33,8 +40,10 @@ const Supplement = () => {
             </p>
           </div>
           <div>
-            <img className="w-full aspect-[4/3] p-12" src={item4} alt="" />
-            <h3 className="uppercase text-2xl text-center mb-4">Sửa chữa</h3>
+            <Link to="/repair-service">
+              <img className="w-full aspect-[4/3] p-12" src={item4} alt="" />
+              <h3 className="uppercase text-2xl text-center mb-4">Sửa chữa</h3>
+            </Link>
             <p>
               Chúng tôi cung cấp xe những người thợ sữa chữa nơi ở của bạn mỗi
               khi bạn gặp sự cố.

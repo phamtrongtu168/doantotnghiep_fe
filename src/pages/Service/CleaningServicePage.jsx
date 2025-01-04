@@ -49,8 +49,8 @@ function CleaningServicePage(props) {
     <>
       <div className="relative">
         <img
-          className="w-full aspect-[7/2]"
-          src="https://picsum.photos/1600/400?random=1"
+          className="w-full aspect-[7/2] object-cover"
+          src="https://top10totnhat.net/wp-content/uploads/2021/10/Dich-vu-ve-sinh-don-dep-nha-da-nang.jpg"
           alt=""
         />
         <h2
@@ -76,7 +76,7 @@ function CleaningServicePage(props) {
             />
             <label className="cursor-pointer space-x-2">
               <input type="checkbox" checked={isRoom} onChange={handleToggle} />
-              <span>Trạng thái: {isRoom ? "Có phòng" : "Địa chỉ khác"}</span>
+              <span>Địa chỉ: {isRoom ? "Địa chỉ khác" : "Phòng của tôi"}</span>
             </label>
             {isRoom && (
               <label>
