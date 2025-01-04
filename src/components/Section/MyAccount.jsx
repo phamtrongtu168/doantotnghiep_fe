@@ -20,6 +20,7 @@ import {
 } from "../../services/api";
 import { CiEdit } from "react-icons/ci";
 import { RENTAL_MANAGERMENT } from "../../common";
+import HorizontalRoomCard from "../../ui/HorizontalRoomCard";
 
 export function AccountMe() {
   const { authData, logout } = useAuth();
@@ -181,7 +182,7 @@ export function RoomMe() {
   const getStatusColor = (status) => {
     switch (status) {
       case "paid":
-        return "text-green-600";
+        return "text-blue-600";
       case "unpaid":
         return "text-red-600";
       default:
@@ -193,10 +194,10 @@ export function RoomMe() {
     switch (status) {
       case "paid":
         return "Đã thanh toán";
-      case "unpaid":
+      case "pending":
         return "Chưa thanh toán";
       default:
-        return "Chưa có hóa đơn";
+        return "Quá hạn";
     }
   };
 
@@ -272,6 +273,20 @@ export function RoomMe() {
                   <span className="text-gray-700">{value}</span>
                 </div>
               ))}
+              {[{ label: "Trạng thái hợp đồng", value: roomData.status }].map(
+                ({ label, value }, idx) => (
+                  <div key={idx} className="flex justify-between">
+                    <span className="font-medium text-gray-600">{label}:</span>
+                    <span className="text-gray-700">
+                      {value === "active"
+                        ? "Đang thuê"
+                        : value === "pending"
+                        ? " Chờ duyệt"
+                        : "Đã kết thúc"}
+                    </span>
+                  </div>
+                )
+              )}
               {rentalBills &&
                 rentalBills.map((rentalBill, billIdx) => (
                   <div
@@ -340,9 +355,9 @@ export function RentalRooms() {
           Thêm phòng
         </button>
       </div>
-      <div className="grid grid-cols-3 gap-8 my-8">
+      <div className="grid grid-cols-2 gap-8 my-8">
         {roomsLandlord?.map((room, index) => (
-          <RoomCard
+          <HorizontalRoomCard
             key={index}
             name={room?.name}
             link={`/room/${room?.id}`}
@@ -360,6 +375,220 @@ export function RentalRooms() {
     </div>
   );
 }
+// export function RentalManagement() {
+//   const navigate = useNavigate();
+//   const [itemUpdate, setItemUpdate] = useState(null);
+//   const [isModal, setIsModal] = useState(false);
+//   const { data: roomsLandlord = [], refetch } = useQuery({
+//     queryKey: ["roomsLandlord"],
+//     queryFn: () => getAllByLandlord(),
+//   });
+//   const {
+//     register,
+//     handleSubmit,
+//     setValue,
+//     formState: { errors },
+//     reset,
+//   } = useForm();
+//   const onSubmit = async (data) => {
+//     try {
+//       console.log(data);
+//       await RentalManagementService.update(
+//         itemUpdate?.rental_management[0]?.id,
+//         data
+//       );
+//       toast.success("Sửa hợp đồng thành công");
+//       refetch();
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+//   const handleItemUpdate = (item) => {
+//     setIsModal(true);
+//     setItemUpdate(item);
+//     setValue("rental_price", item.price);
+//     setValue("start_date", item?.rental_management[0]?.start_date);
+//     setValue("end_date", item?.rental_management[0]?.end_date);
+//     setValue("status", item.rental_management[0]?.status);
+//   };
+//   const formatCurrency = (value) => {
+//     return value
+//       ? new Intl.NumberFormat("vi-VN").format(value) + "đ"
+//       : "Chưa có giá";
+//   };
+
+//   const formatDateRange = (start, end) =>
+//     start && end
+//       ? `${moment(start).format("DD/MM/YYYY")} đến ${moment(end).format(
+//           "DD/MM/YYYY"
+//         )}`
+//       : "Chưa có ngày";
+
+//   const filteredRooms = roomsLandlord.filter(
+//     (room) => room?.rental_management?.length > 0
+//   );
+
+//   const handleBill = (roomId) => {
+//     navigate(`/my-account?position=5&roomId=${roomId}`);
+//   };
+//   const handleConfirmation = async (roomId) => {
+//     try {
+//       const res = await RentalManagementService.updateConfirm(roomId);
+//       console.log(res);
+//       refetch();
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+//   return (
+//     <div>
+//       <h1>Quản lý cho thuê</h1>
+//       <div className="flex flex-col gap-4 mt-4">
+//         {filteredRooms?.map((room, index) => (
+//           <div key={index} className="relative">
+//             <h3 className="font-normal">
+//               Phòng: {room.name || `Phòng ${index + 1}`}
+//             </h3>
+//             <button
+//               className="absolute top-4 right-4 flex p-0.5 cursor-pointer"
+//               onClick={() => handleItemUpdate(room)}
+//             >
+//               <CiEdit />
+//             </button>
+//             <div className="w-1/2 border-2 border-solid border-zinc-400 p-4 rounded">
+//               <div className="grid grid-cols-2 gap-4">
+//                 <p>
+//                   Giá:{" "}
+//                   <span>
+//                     {formatCurrency(
+//                       room?.rental_management?.rental_price || room.price
+//                     )}
+//                   </span>
+//                 </p>
+//                 <p>
+//                   Người thuê hiện tại:{" "}
+//                   <span>
+//                     {room?.rental_management[0]?.tenant?.name ||
+//                       "Chưa có người thuê"}
+//                   </span>
+//                 </p>
+//                 <p>
+//                   Địa chỉ: <span>{room.address || "Chưa có địa chỉ"}</span>
+//                 </p>
+//                 <p>
+//                   Số điện thoại:{" "}
+//                   <span>
+//                     {room?.rental_management[0]?.tenant?.phone ||
+//                       "Chưa có số điện thoại"}
+//                   </span>
+//                 </p>
+//                 <p>
+//                   Hợp đồng từ:{" "}
+//                   <span>
+//                     {formatDateRange(
+//                       room?.rental_management[0]?.start_date,
+//                       room?.rental_management[0]?.end_date
+//                     )}
+//                   </span>
+//                 </p>
+//                 <p>
+//                   Trạng thái:{" "}
+//                   <span>
+//                     {room?.rental_management[0]?.status === "active"
+//                       ? "Đang cho thuê"
+//                       : room?.rental_management[0]?.status === "pending"
+//                       ? "Chờ xử lý"
+//                       : room?.rental_management[0]?.status === "completed"
+//                       ? "Đã hoàn thành"
+//                       : "Chưa có trạng thái"}
+//                   </span>
+//                 </p>
+//               </div>
+//               <div className="flex gap-4 mt-4">
+//                 {room?.rental_management[0]?.status === "pending" && (
+//                   <button
+//                     onClick={() =>
+//                       handleConfirmation(room?.rental_management[0]?.id)
+//                     }
+//                     className=" cursor-pointer text-black border-spacing-1 p-2.5 font-bold rounded mt-4 mr-auto block"
+//                   >
+//                     Xác nhận cho thuê
+//                   </button>
+//                 )}
+//                 <button
+//                   onClick={() => handleBill(room?.id)}
+//                   className="bg-primary cursor-pointer text-white border-none p-2.5 font-bold rounded mt-4 ml-auto block"
+//                 >
+//                   Hóa đơn thanh toán
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//       <ModalConfirm
+//         isOpen={isModal}
+//         onClose={() => setIsModal(false)}
+//         title={"Sửa hợp đồng"}
+//         children={
+//           <>
+//             <form
+//               onSubmit={handleSubmit(onSubmit)}
+//               className="mt-6 grid grid-cols-1 gap-4"
+//             >
+//               <label>
+//                 <b className="text-sm">Giá</b>
+//                 <input
+//                   placeholder="Giá"
+//                   {...register("rental_price")}
+//                   className="w-full p-2 border border-gray-300 rounded outline-none"
+//                 />
+//               </label>
+//               <label>
+//                 <b className="text-sm">Ngày bắt đầu</b>
+//                 <input
+//                   type="date"
+//                   placeholder="Ngày bắt đầu"
+//                   {...register("start_date")}
+//                   className="w-full p-2 border border-gray-300 rounded outline-none"
+//                 />
+//               </label>
+//               <label>
+//                 <b className="text-sm">Ngày kết thúc</b>
+//                 <input
+//                   type="date"
+//                   placeholder="Ngày kết thúc"
+//                   {...register("end_date")}
+//                   className="w-full p-2 border border-gray-300 rounded outline-none"
+//                 />
+//               </label>
+//               <label>
+//                 <b className="text-sm">Trạng thái</b>
+//                 <select
+//                   {...register("status")}
+//                   className="w-full p-2 border border-gray-300 rounded outline-none"
+//                 >
+//                   <option value="">-- Trạng thái --</option>
+//                   {RENTAL_MANAGERMENT?.map((item, index) => (
+//                     <option key={index} value={item?.value}>
+//                       {item?.name}
+//                     </option>
+//                   ))}
+//                 </select>
+//               </label>
+//               <button
+//                 type="submit"
+//                 className="p-2.5 bg-primary border-none text-white rounded cursor-pointer font-bold"
+//               >
+//                 Lưu thay đổi
+//               </button>
+//             </form>
+//           </>
+//         }
+//       />
+//     </div>
+//   );
+// }
 export function RentalManagement() {
   const navigate = useNavigate();
   const [itemUpdate, setItemUpdate] = useState(null);
@@ -375,19 +604,21 @@ export function RentalManagement() {
     formState: { errors },
     reset,
   } = useForm();
+
   const onSubmit = async (data) => {
     try {
-      console.log(data);
       await RentalManagementService.update(
         itemUpdate?.rental_management[0]?.id,
         data
       );
-      toast.success("Sửa hợp đồng thành công");
+      toast.success("Sửa hợp đồng thành công");
       refetch();
+      setIsModal(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
+
   const handleItemUpdate = (item) => {
     setIsModal(true);
     setItemUpdate(item);
@@ -396,6 +627,7 @@ export function RentalManagement() {
     setValue("end_date", item?.rental_management[0]?.end_date);
     setValue("status", item.rental_management[0]?.status);
   };
+
   const formatCurrency = (value) => {
     return value
       ? new Intl.NumberFormat("vi-VN").format(value) + "đ"
@@ -404,7 +636,7 @@ export function RentalManagement() {
 
   const formatDateRange = (start, end) =>
     start && end
-      ? `${moment(start).format("DD/MM/YYYY")} đến ${moment(end).format(
+      ? `${moment(start).format("DD/MM/YYYY")} - ${moment(end).format(
           "DD/MM/YYYY"
         )}`
       : "Chưa có ngày";
@@ -416,164 +648,160 @@ export function RentalManagement() {
   const handleBill = (roomId) => {
     navigate(`/my-account?position=5&roomId=${roomId}`);
   };
+
   const handleConfirmation = async (roomId) => {
     try {
-      const res = await RentalManagementService.updateConfirm(roomId);
-      console.log(res);
+      await RentalManagementService.updateConfirm(roomId);
       refetch();
     } catch (error) {
       console.error(error);
     }
   };
+
   return (
-    <div>
-      <h1>Quản lý cho thuê</h1>
-      <div className="flex flex-col gap-4 mt-4">
-        {filteredRooms?.map((room, index) => (
-          <div key={index} className="relative">
-            <h3 className="font-normal">
+    <div className="container mx-auto py-8 px-4">
+      <h1 className="text-2xl font-bold text-center mb-6">Quản lý cho thuê</h1>
+
+      <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+        {filteredRooms.map((room, index) => (
+          <div key={index} className="bg-white shadow-md rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-4">
               Phòng: {room.name || `Phòng ${index + 1}`}
             </h3>
-            <button
-              className="absolute top-4 right-4 flex p-0.5 cursor-pointer"
-              onClick={() => handleItemUpdate(room)}
-            >
-              <CiEdit />
-            </button>
-            <div className="w-1/2 border-2 border-solid border-zinc-400 p-4 rounded">
-              <div className="grid grid-cols-2 gap-4">
-                <p>
-                  Giá:{" "}
-                  <span>
-                    {formatCurrency(
-                      room?.rental_management?.rental_price || room.price
-                    )}
-                  </span>
-                </p>
-                <p>
-                  Người thuê hiện tại:{" "}
-                  <span>
-                    {room?.rental_management[0]?.tenant?.name ||
-                      "Chưa có người thuê"}
-                  </span>
-                </p>
-                <p>
-                  Địa chỉ: <span>{room.address || "Chưa có địa chỉ"}</span>
-                </p>
-                <p>
-                  Số điện thoại:{" "}
-                  <span>
-                    {room?.rental_management[0]?.tenant?.phone ||
-                      "Chưa có số điện thoại"}
-                  </span>
-                </p>
-                <p>
-                  Hợp đồng từ:{" "}
-                  <span>
-                    {formatDateRange(
-                      room?.rental_management[0]?.start_date,
-                      room?.rental_management[0]?.end_date
-                    )}
-                  </span>
-                </p>
-                <p>
-                  Trạng thái:{" "}
-                  <span>
-                    {room?.rental_management[0]?.status === "active"
-                      ? "Đang cho thuê"
-                      : room?.rental_management[0]?.status === "pending"
-                      ? "Chờ xử lý"
-                      : room?.rental_management[0]?.status === "completed"
-                      ? "Đã hoàn thành"
-                      : "Chưa có trạng thái"}
-                  </span>
-                </p>
-              </div>
-              <div className="flex gap-4 mt-4">
-                {room?.rental_management[0]?.status === "pending" && (
-                  <button
-                    onClick={() =>
-                      handleConfirmation(room?.rental_management[0]?.id)
-                    }
-                    className=" cursor-pointer text-black border-spacing-1 p-2.5 font-bold rounded mt-4 mr-auto block"
-                  >
-                    Xác nhận cho thuê
-                  </button>
+
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <p>
+                <span className="font-medium">Giá:</span>{" "}
+                {formatCurrency(
+                  room?.rental_management?.rental_price || room.price
                 )}
+              </p>
+              <p>
+                <span className="font-medium">Người thuê hiện tại:</span>{" "}
+                {room?.rental_management[0]?.tenant?.name ||
+                  "Chưa có người thuê"}
+              </p>
+              <p>
+                <span className="font-medium">Địa chỉ:</span>{" "}
+                {room.address || "Chưa có địa chỉ"}
+              </p>
+              <p>
+                <span className="font-medium">Số điện thoại:</span>{" "}
+                {room?.rental_management[0]?.tenant?.phone ||
+                  "Chưa có số điện thoại"}
+              </p>
+              <p>
+                <span className="font-medium">Hợp đồng từ:</span>{" "}
+                {formatDateRange(
+                  room?.rental_management[0]?.start_date,
+                  room?.rental_management[0]?.end_date
+                )}
+              </p>
+              <p>
+                <span className="font-medium">Trạng thái:</span>{" "}
+                {room?.rental_management[0]?.status === "active"
+                  ? "Đang cho thuê"
+                  : room?.rental_management[0]?.status === "pending"
+                  ? "Chờ xử lý"
+                  : room?.rental_management[0]?.status === "completed"
+                  ? "Đã hoàn thành"
+                  : "Chưa có trạng thái"}
+              </p>
+            </div>
+
+            <div className="mt-4 flex justify-between">
+              {room?.rental_management[0]?.status === "pending" && (
                 <button
-                  onClick={() => handleBill(room?.id)}
-                  className="bg-primary cursor-pointer text-white border-none p-2.5 font-bold rounded mt-4 ml-auto block"
+                  onClick={() =>
+                    handleConfirmation(room?.rental_management[0]?.id)
+                  }
+                  className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600"
                 >
-                  Hóa đơn thanh toán
+                  Xác nhận cho thuê
                 </button>
-              </div>
+              )}
+
+              <button
+                onClick={() => handleBill(room?.id)}
+                className="px-4 py-2 bg-blue-500 text-white border-none font-semibold rounded-md hover:bg-blue-600"
+              >
+                Hóa đơn thanh toán
+              </button>
+
+              <button
+                onClick={() => handleItemUpdate(room)}
+                className="px-4 py-2 bg-gray-500 text-white border-none font-semibold rounded-md hover:bg-gray-600"
+              >
+                Sửa hợp đồng
+              </button>
             </div>
           </div>
         ))}
       </div>
-      <ModalConfirm
-        isOpen={isModal}
-        onClose={() => setIsModal(false)}
-        title={"Sửa hợp đồng"}
-        children={
-          <>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="mt-6 grid grid-cols-1 gap-4"
-            >
-              <label>
-                <b className="text-sm">Giá</b>
-                <input
-                  placeholder="Giá"
-                  {...register("rental_price")}
-                  className="w-full p-2 border border-gray-300 rounded outline-none"
-                />
-              </label>
-              <label>
-                <b className="text-sm">Ngày bắt đầu</b>
-                <input
-                  type="date"
-                  placeholder="Ngày bắt đầu"
-                  {...register("start_date")}
-                  className="w-full p-2 border border-gray-300 rounded outline-none"
-                />
-              </label>
-              <label>
-                <b className="text-sm">Ngày kết thúc</b>
-                <input
-                  type="date"
-                  placeholder="Ngày kết thúc"
-                  {...register("end_date")}
-                  className="w-full p-2 border border-gray-300 rounded outline-none"
-                />
-              </label>
-              <label>
-                <b className="text-sm">Trạng thái</b>
-                <select
-                  {...register("status")}
-                  className="w-full p-2 border border-gray-300 rounded outline-none"
-                >
-                  <option value="">-- Trạng thái --</option>
-                  {RENTAL_MANAGERMENT?.map((item, index) => (
-                    <option key={index} value={item?.value}>
-                      {item?.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <button
-                type="submit"
-                className="p-2.5 bg-primary border-none text-white rounded cursor-pointer font-bold"
+
+      {isModal && (
+        <ModalConfirm
+          isOpen={isModal}
+          onClose={() => setIsModal(false)}
+          title="Sửa hợp đồng"
+        >
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="grid grid-cols-1 gap-4 mt-4"
+          >
+            <label>
+              <span className="font-medium">Giá</span>
+              <input
+                placeholder="Giá"
+                {...register("rental_price")}
+                className="w-full p-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </label>
+            <label>
+              <span className="font-medium">Ngày bắt đầu</span>
+              <input
+                type="date"
+                placeholder="Ngày bắt đầu"
+                {...register("start_date")}
+                className="w-full p-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </label>
+            <label>
+              <span className="font-medium">Ngày kết thúc</span>
+              <input
+                type="date"
+                placeholder="Ngày kết thúc"
+                {...register("end_date")}
+                className="w-full p-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </label>
+            <label>
+              <span className="font-medium">Trạng thái</span>
+              <select
+                {...register("status")}
+                className="w-full p-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-500"
               >
-                Lưu thay đổi
-              </button>
-            </form>
-          </>
-        }
-      />
+                <option value="">-- Trạng thái --</option>
+                {RENTAL_MANAGERMENT?.map((item, index) => (
+                  <option key={index} value={item?.value}>
+                    {item?.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-primary text-white font-semibold rounded-md hover:bg-primary-dark"
+            >
+              Lưu thay đổi
+            </button>
+          </form>
+        </ModalConfirm>
+      )}
     </div>
   );
 }
+
 export function BillManagement() {
   const [isModal, setIsModal] = useState(false);
   const location = useLocation(); // Lấy thông tin URL hiện tại
@@ -611,7 +839,7 @@ export function BillManagement() {
   const getStatusColor = (status) => {
     switch (status) {
       case "paid":
-        return "text-green-600";
+        return "text-blue-600";
       case "unpaid":
         return "text-red-600";
       default:
