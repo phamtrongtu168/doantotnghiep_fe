@@ -9,7 +9,10 @@ import { getAll as getAllBill } from "../../services/api/BillService";
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosAuth from "../../utils/axiosAuth";
 import { TaskCard } from "../../ui/TaskCard";
-import { getAll as getAllServiceRequest } from "../../services/api/ServiceRequestService";
+import {
+  getAll as getAllServiceRequest,
+  getForUser,
+} from "../../services/api/ServiceRequestService";
 import ModalConfirm from "../Modal/ModalConfirm";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -19,8 +22,9 @@ import {
   ServiceRequestService,
 } from "../../services/api";
 import { CiEdit } from "react-icons/ci";
-import { RENTAL_MANAGERMENT } from "../../common";
+import { RENTAL_MANAGERMENT, STATUS_SERVICE } from "../../common";
 import HorizontalRoomCard from "../../ui/HorizontalRoomCard";
+import { RequestCard } from "../../ui/RequestCard";
 
 export function AccountMe() {
   const { authData, logout } = useAuth();
@@ -1004,22 +1008,69 @@ export function TaskList() {
           requestDate={task?.request_date}
           user={task?.user}
           status={task?.status}
-          vchildren={
-            <>
-              <button
-                onClick={() => handleConfirm(task?.id)}
-                className="border-none p-2 rounded bg-zinc-100 text-black"
-              >
-                Đã hoàn thành
-              </button>
-            </>
+          children={
+            <button
+              onClick={() => handleConfirm(task?.id)}
+              className="bg-primary text-white p-2 rounded"
+            >
+              Confirm
+            </button>
           }
         />
       ))}
     </div>
   );
 }
-
+//
+export function ListServicesRequest() {
+  const { data: services, refetch } = useQuery({
+    queryKey: ["services"],
+    queryFn: getForUser,
+  });
+  const handleConfirm = async (id) => {
+    try {
+      const res = await ServiceRequestService.cancelComplete(id);
+      console.log(res);
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  return (
+    <div className="grid grid-cols-4 gap-4">
+      {services?.map((service, index) => (
+        <RequestCard
+          key={index}
+          serviceId={service?.id}
+          room={service?.room}
+          service={service?.service}
+          address={service?.address}
+          movingFrom={service?.moving_from}
+          movingTo={service?.moving_to}
+          serviceDate={service?.service_date}
+          user={service?.user}
+          status={
+            service?.status === "pending"
+              ? "Đang xử lý"
+              : service?.status === "completed"
+              ? "Đã hoàn thành"
+              : "Đã hủy"
+          }
+          children={
+            service?.status === "pending" && (
+              <button
+                onClick={() => handleConfirm(service?.id)}
+                className=" text-sm px-4 py-2 mt-4 text-gray-600 border border-gray-300 rounded hover:bg-gray-100"
+              >
+                Hủy
+              </button>
+            )
+          }
+        />
+      ))}
+    </div>
+  );
+}
 // Hàm tính tổng chi phí
 function calculateTotal(room, rentalBill) {
   const electricityCost = rentalBill?.electricity_usage * room.electricity_rate;

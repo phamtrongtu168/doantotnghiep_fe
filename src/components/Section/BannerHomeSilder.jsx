@@ -183,7 +183,7 @@ const BannerHomeSilder = () => {
                   getOptionLabel={(e) => e.name}
                   getOptionValue={(e) => e.code}
                   placeholder="Chọn quận huyện"
-                  isDisabled={!selectedProvince} // Disable quận huyện nếu chưa chọn tỉnh thành
+                  isDisabled={!selectedProvince}
                 />
               </label>
             </div>

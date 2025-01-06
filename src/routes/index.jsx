@@ -9,6 +9,8 @@ import RoomPage from "../pages/Room/RoomPage";
 import CleaningServicePage from "../pages/Service/CleaningServicePage";
 import RepairServicePage from "../pages/Service/RepairServicePage";
 import TransferServicePage from "../pages/Service/TransferServicePage";
+import ServiceRequestManagement from "../pages/Service/ServiceRequestManagement";
+import UserManagement from "../pages/User/UserManagement";
 export const homeRoutes = [
   {
     path: "/",
@@ -54,6 +56,15 @@ export const homeRoutes = [
   {
     path: "/my-account",
     component: <MyAccountPage />,
+  },
+  {
+    path: "/service-requests",
+    component: <ServiceRequestManagement />,
+  },
+  //For userManagement
+  {
+    path: "/users",
+    component: <UserManagement />,
   },
 ];
 

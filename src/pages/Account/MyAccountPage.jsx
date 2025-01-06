@@ -9,6 +9,7 @@ import {
   RentalManagement,
   BillManagement,
   TaskList,
+  ListServicesRequest,
 } from "../../components/Section/MyAccount";
 
 function MyAccountPage() {
@@ -83,6 +84,13 @@ function MyAccountPage() {
         userRole === "staff_cleaner" ||
         userRole === "staff_movinger" ||
         userRole === "staff_repairer",
+    },
+    {
+      id: 7,
+      label: "Yêu cầu dịch vụ",
+      roles: ["user", "landlord"],
+      component: <ListServicesRequest />,
+      isVisible: true,
     },
   ];
 
