@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { get } from "../../services/api/ServiceRequestService";
 import { assignTask } from "../../services/api/ServiceRequestService"; // Hàm API giao nhiệm vụ
 import { getAllUsers } from "../../services/api/UserService"; // Hàm API lấy danh sách nhân viên
-import { GiHidden } from "react-icons/gi";
+import { toast } from "react-toastify";
 
 function ServiceRequestManagement() {
   const [requests, setRequests] = useState([]);
@@ -10,6 +10,7 @@ function ServiceRequestManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái mở/đóng Modal
   const [selectedRequest, setSelectedRequest] = useState(null); // Yêu cầu được chọn
   const [users, setUsers] = useState([]); // Danh sách nhân viên
+  const [selectedUser, setSelectedUser] = useState(null); // Nhân viên được chọn
 
   // Fetch dữ liệu yêu cầu dịch vụ
   useEffect(() => {
@@ -27,7 +28,7 @@ function ServiceRequestManagement() {
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
-      const { data } = await getAllUsers();
+      const data = await getAllUsers();
       if (data) {
         setUsers(data);
       }
@@ -36,16 +37,20 @@ function ServiceRequestManagement() {
 
     fetchUsers();
   }, []);
-
   // Xử lý giao nhiệm vụ
   const handleAssignTask = async (requestId, staffId) => {
-    const response = await assignTask(requestId, staffId);
-    if (response.success) {
-      alert("Nhiệm vụ đã được giao thành công!");
-      setIsModalOpen(false);
+    try {
+      const response = await assignTask(requestId, staffId);
+      console.log(response);
+      toast.success("Giao nhiệm vụ thành công");
+    } catch (error) {
+      console.error(error);
+      toast.error("Giao nhiệm vụ thất bại");
     }
   };
-
+  const handleSave = (staffId) => {
+    setSelectedUser(staffId);
+  };
   return (
     <div className="p-6 bg-white shadow-md rounded-lg">
       <div className="flex justify-between items-center mb-4">
@@ -142,9 +147,7 @@ function ServiceRequestManagement() {
               Chọn nhân viên:
               <select
                 className="w-full mt-2 p-2 border border-gray-300 rounded"
-                onChange={(e) =>
-                  handleAssignTask(selectedRequest?.id, e.target.value)
-                }
+                onChange={(e) => handleSave(e.target.value)}
               >
                 <option value="">-- Chọn nhân viên --</option>
                 {users
@@ -170,7 +173,9 @@ function ServiceRequestManagement() {
               </button>
               <button
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                onClick={() => alert("Nhiệm vụ đã được giao!")}
+                onClick={() =>
+                  handleAssignTask(selectedRequest?.id, selectedUser)
+                }
               >
                 Xác nhận
               </button>

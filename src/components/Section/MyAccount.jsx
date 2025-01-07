@@ -676,9 +676,8 @@ export function RentalManagement() {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <p>
                 <span className="font-medium">Giá:</span>{" "}
-                {formatCurrency(
-                  room?.rental_management?.rental_price || room.price
-                )}
+                {formatCurrency(room?.rental_management[0]?.rental_price) ||
+                  room?.price}
               </p>
               <p>
                 <span className="font-medium">Người thuê hiện tại:</span>{" "}
@@ -1013,7 +1012,7 @@ export function TaskList() {
               onClick={() => handleConfirm(task?.id)}
               className="bg-primary text-white p-2 rounded"
             >
-              Confirm
+              Đã hoàn thành
             </button>
           }
         />

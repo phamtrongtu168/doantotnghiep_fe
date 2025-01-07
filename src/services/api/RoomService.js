@@ -10,7 +10,15 @@ export const getAll = async () => {
     return [];
   }
 };
-
+export const getRoomAvailable = async () => {
+  try {
+    const temp = await axiosPublic.get(`rooms/available`);
+    return temp?.data?.data;
+  } catch (e) {
+    console.log(e);
+    return [];
+  }
+};
 export const getAllByUser = async () => {
   try {
     const temp = await axiosAuth.get(`user/rooms`);

@@ -4,13 +4,13 @@ import turnleft from "../../assets/icons/turnleft-icon.svg";
 import turnright from "../../assets/icons/turnright-icon.svg";
 import { Element } from "react-scroll";
 import { useQuery } from "react-query";
-import { getAll } from "../../services/api/RoomService";
+import { getRoomAvailable } from "../../services/api/RoomService";
 import RoomCard from "../../ui/RoomCard";
 
 const TheExistRoom = () => {
   const { data: rooms } = useQuery({
-    queryKey: ["room-list"],
-    queryFn: () => getAll(),
+    queryKey: ["room-list-1"],
+    queryFn: () => getRoomAvailable(),
   });
   const containerRef = useRef(null);
 
