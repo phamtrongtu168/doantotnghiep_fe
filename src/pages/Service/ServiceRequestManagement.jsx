@@ -150,18 +150,29 @@ function ServiceRequestManagement() {
                 onChange={(e) => handleSave(e.target.value)}
               >
                 <option value="">-- Chọn nhân viên --</option>
-                {users
-                  .filter(
-                    (staff) =>
-                      staff.role === "staff_cleaner" ||
-                      staff.role === "staff_repairer" ||
-                      staff.role === "staff_movinger"
-                  )
-                  .map((staff, index) => (
-                    <option key={index} value={staff.id}>
-                      {staff.name} - ({staff.role})
-                    </option>
-                  ))}
+                {selectedRequest?.service?.service_type === "moving"
+                  ? users
+                      .filter((staff) => staff.role === "staff_movinger")
+                      .map((staff, index) => (
+                        <option key={index} value={staff.id}>
+                          {staff.name} - ({staff.role})
+                        </option>
+                      ))
+                  : selectedRequest?.service?.service_type === "cleaning"
+                  ? users
+                      .filter((staff) => staff.role === "staff_cleaner")
+                      .map((staff, index) => (
+                        <option key={index} value={staff.id}>
+                          {staff.name} - ({staff.role})
+                        </option>
+                      ))
+                  : users
+                      .filter((staff) => staff.role === "staff_repairer")
+                      .map((staff, index) => (
+                        <option key={index} value={staff.id}>
+                          {staff.name} - ({staff.role})
+                        </option>
+                      ))}
               </select>
             </label>
             <div className="flex justify-end">
