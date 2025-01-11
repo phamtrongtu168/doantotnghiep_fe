@@ -60,13 +60,16 @@ function RoomDetailPage(props) {
             endDate.setFullYear(startDate.getFullYear() + 1);
             break;
           case "":
-            // Không có thay đổi cho 'Chọn Sau'
+            endDate = null;
             break;
           default:
             break;
         }
 
-        data.end_date = endDate.toISOString().split("T")[0]; // Chuyển đổi ngày thành định dạng YYYY-MM-DD
+        data.end_date = endDate?.toISOString().split("T")[0]; // Chuyển đổi ngày thành định dạng YYYY-MM-DD
+        if (!data.end_date) {
+          data.end_date = null;
+        }
         const res = RentalManagementService.create(data);
         toast.success("Đã gửi yêu cầu thuê phòng! + ");
       }
@@ -176,7 +179,14 @@ function RoomDetailPage(props) {
                   <b>12 Tháng</b>
                 </label>
                 <label className="flex gap-2 whitespace-nowrap" htmlFor="">
-                  <input type="radio" />
+                  <input
+                    type="radio"
+                    value={""}
+                    {...register("end_date", {
+                      required: "Trường là bắt buộc!",
+                    })}
+                  />
+
                   <b>Chọn Sau</b>
                 </label>
               </div>

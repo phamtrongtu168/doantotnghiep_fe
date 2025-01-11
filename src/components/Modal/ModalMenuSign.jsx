@@ -3,9 +3,10 @@ import { useForm } from "react-hook-form";
 import { AuthService, UserService } from "../../services/api";
 import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
-
+import { useNavigate } from "react-router-dom";
 const ModalMenuSign = ({ isOpen, typeModal, onClose }) => {
   const { login } = useAuth();
+  const navigate = useNavigate();
   const {
     register: registerForm1,
     handleSubmit: handleSubmitForm1,
@@ -40,6 +41,9 @@ const ModalMenuSign = ({ isOpen, typeModal, onClose }) => {
     console.log("Form 2 Data:", data);
     try {
       const response = await AuthService.login(data);
+      if (response.user.role == "admin") {
+        navigate("/dashboard");
+      }
       const authData = {
         user: response.user,
         token: response.token,
@@ -106,7 +110,7 @@ const ModalMenuSign = ({ isOpen, typeModal, onClose }) => {
                     required: "Trường là bắt buộc!",
                   })}
                   className="w-full p-3 rounded-md border-zinc-400 border outline-none"
-                  type="text"
+                  type="password"
                   placeholder="Mật Khẩu"
                 />
                 {errorsForm1 && (
@@ -121,7 +125,7 @@ const ModalMenuSign = ({ isOpen, typeModal, onClose }) => {
                     required: "Trường là bắt buộc!",
                   })}
                   className="w-full p-3 rounded-md border-zinc-400 border outline-none"
-                  type="text"
+                  type="password"
                   placeholder="Xác Nhận Mật Khẩu"
                 />
                 {errorsForm1 && (
@@ -203,7 +207,7 @@ const ModalMenuSign = ({ isOpen, typeModal, onClose }) => {
                     required: "Trường là bắt buộc!",
                   })}
                   className="w-full p-3 rounded-md border-zinc-400 border outline-none"
-                  type="text"
+                  type="password"
                   placeholder="Mật Khẩu"
                 />
                 {errorsForm2 && (

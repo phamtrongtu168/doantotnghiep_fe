@@ -210,7 +210,7 @@ export function RoomMe() {
       // Dữ liệu yêu cầu tạo thanh toán
       const requestData = {
         transaction_id: transaction_id, // ID hóa đơn
-        amount: totalBill / 100, // Số tiền cần thanh toán
+        amount: totalBill, // Số tiền cần thanh toán
       };
 
       // Gửi yêu cầu tới backend
@@ -253,7 +253,9 @@ export function RoomMe() {
               {[
                 {
                   label: "Giá thuê",
-                  value: roomData.rental_price ? room.price : 0,
+                  value: roomData.rental_price
+                    ? roomData.rental_price
+                    : room.price,
                 },
               ].map(({ label, value }, idx) => (
                 <div key={idx} className="flex justify-between">
@@ -314,9 +316,16 @@ export function RoomMe() {
                       </p>
                       <p>Tiền điện: {rentalBill.electricity_usage} kWh</p>
                       <p>Tiền nước: {rentalBill.water_usage} m³</p>
-                      <p>Tiền phòng: {rentalBill.transaction_id} VNĐ</p>
+                      <p>
+                        {" "}
+                        Tiền phòng:{" "}
+                        {roomData.rental_price
+                          ? roomData.rental_price
+                          : room.price}{" "}
+                        VNĐ
+                      </p>
                       <p className="font-medium">
-                        Tổng: {calculateTotal(room, rentalBill)} VNĐ
+                        Tổng: {calculateTotal(room, roomData, rentalBill)} VNĐ
                       </p>
                       {rentalBill.status !== "paid" && (
                         <button
@@ -324,7 +333,7 @@ export function RoomMe() {
                           onClick={() =>
                             handlePayment(
                               rentalBill.transaction_id,
-                              calculateTotal(room, rentalBill)
+                              calculateTotal(room, roomData, rentalBill)
                             )
                           }
                         >
@@ -1071,9 +1080,11 @@ export function ListServicesRequest() {
   );
 }
 // Hàm tính tổng chi phí
-function calculateTotal(room, rentalBill) {
+function calculateTotal(room, roomData, rentalBill) {
   const electricityCost = rentalBill?.electricity_usage * room.electricity_rate;
   const waterCost = rentalBill?.water_usage * room.water_rate;
-  const rent = parseFloat(room.price);
+  const rent = parseFloat(
+    roomData.rental_price ? roomData.rental_price : room.price
+  );
   return electricityCost + waterCost + rent;
 }

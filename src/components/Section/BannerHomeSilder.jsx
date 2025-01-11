@@ -116,10 +116,13 @@ const BannerHomeSilder = () => {
     } catch (error) {}
   };
   const firstRoom = rooms && rooms[0];
-
+  console.log(firstRoom?.images[0]?.image_url);
   return (
     <Element name="home">
-      <section className="relative p-8 bg-main-home rounded-xl h-[76vh]">
+      <section
+        className="relative p-8 bg-main-home rounded-xl h-[76vh]"
+        style={{ backgroundImage: `url(${firstRoom?.images[0]?.image_url})` }}
+      >
         <div className="flex gap-8">
           <div className="w-3/5">
             <h1 className="text-6xl text-primary">Phòng Đặc Biệt</h1>

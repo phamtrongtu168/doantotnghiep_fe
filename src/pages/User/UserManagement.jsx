@@ -1,27 +1,46 @@
 import React, { useEffect, useState } from "react";
+import ModalMenuSignStaff from "../../components/Modal/ModalSignStaff";
 import { getAllUsers } from "../../services/api/UserService";
+
 function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-      const data = await getAllUsers();
-      if (data) {
-        setUsers(data);
-      }
-      setLoading(false);
-    };
-
     fetchUsers();
   }, []);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    const data = await getAllUsers();
+    if (data) {
+      setUsers(data);
+    }
+    setLoading(false);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    fetchUsers(); // Cập nhật danh sách sau khi thêm tài khoản
+  };
 
   return (
     <div className="p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
         Quản lý người dùng
       </h2>
+      <button
+        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        onClick={handleOpenModal}
+      >
+        Thêm Tài Khoản
+      </button>
+
       {loading ? (
         <div className="text-center text-gray-500">Đang tải dữ liệu...</div>
       ) : (
@@ -57,7 +76,7 @@ function UserManagement() {
                     </td>
                     <td className="px-6 py-4 border border-gray-300">
                       <button className="text-sm px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-gray-100">
-                        Sửa thông tin{" "}
+                        Sửa thông tin
                       </button>
                     </td>
                   </tr>
@@ -65,7 +84,7 @@ function UserManagement() {
               ) : (
                 <tr>
                   <td
-                    colSpan="4"
+                    colSpan="5"
                     className="px-6 py-4 text-center text-gray-500 border border-gray-300"
                   >
                     Không có dữ liệu người dùng.
@@ -76,6 +95,12 @@ function UserManagement() {
           </table>
         </div>
       )}
+
+      <ModalMenuSignStaff
+        isOpen={isModalOpen}
+        typeModal={1}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }
