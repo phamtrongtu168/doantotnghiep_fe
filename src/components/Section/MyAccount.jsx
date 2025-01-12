@@ -250,6 +250,22 @@ export function RoomMe() {
                   </div>
                 )
               )}
+              {[{ label: "Người quản lý", value: room?.landlord?.name }].map(
+                ({ label, value }, idx) => (
+                  <div key={idx} className="flex justify-between">
+                    <span className="font-medium text-gray-600">{label}:</span>
+                    <span className="text-gray-700">{value}</span>
+                  </div>
+                )
+              )}
+              {[{ label: "Số điện thoại", value: room?.landlord?.phone }].map(
+                ({ label, value }, idx) => (
+                  <div key={idx} className="flex justify-between">
+                    <span className="font-medium text-gray-600">{label}:</span>
+                    <span className="text-gray-700">{value}</span>
+                  </div>
+                )
+              )}
               {[
                 {
                   label: "Giá thuê",
@@ -733,12 +749,14 @@ export function RentalManagement() {
                 </button>
               )}
 
-              <button
-                onClick={() => handleBill(room?.id)}
-                className="px-4 py-2 bg-blue-500 text-white border-none font-semibold rounded-md hover:bg-blue-600"
-              >
-                Hóa đơn thanh toán
-              </button>
+              {room?.rental_management[0]?.status === "active" && (
+                <button
+                  onClick={() => handleBill(room?.id)}
+                  className="px-4 py-2 bg-blue-500 text-white border-none font-semibold rounded-md hover:bg-blue-600"
+                >
+                  Hóa đơn thanh toán
+                </button>
+              )}
 
               <button
                 onClick={() => handleItemUpdate(room)}
@@ -872,7 +890,7 @@ export function BillManagement() {
     <div className="max-w-6xl mx-auto">
       <div className="bg-white shadow rounded-lg p-6 mb-6">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-zinc-600">{`Hóa đơn thanh toán phòng: ${billLandlords?.room?.name}`}</h3>
+          <h3 className="text-lg font-semibold text-zinc-600">{`Hóa đơn thanh toán phòng: ${billLandlords?.rental?.room?.name}`}</h3>
           <button
             onClick={() => setIsModal(true)}
             className="bg-primary cursor-pointer font-bold text-white rounded-lg px-4 py-2.5 mt-4 border-none"
@@ -881,7 +899,7 @@ export function BillManagement() {
           </button>
         </div>
         <div className="mt-4 space-y-3">
-          {billLandlords?.bills?.map((rentalBill, billIdx) => (
+          {billLandlords?.rental?.rental_bills?.map((rentalBill, billIdx) => (
             <div key={billIdx} className="p-4 bg-gray-100 rounded-lg mt-3">
               <p className="text-gray-800">
                 <b>Trạng thái:</b>{" "}
@@ -900,9 +918,11 @@ export function BillManagement() {
                 </p>
                 <p>Tiền điện: {rentalBill?.electricity_usage} kWh</p>
                 <p>Tiền nước: {rentalBill?.water_usage} m³</p>
-                <p>Tiền phòng: {billLandlords?.room?.price} VNĐ</p>
-                <p className="font-medium">
-                  Tổng: {calculateTotal(billLandlords?.room, rentalBill)} VNĐ
+                <p>
+                  Tiền phòng:{" "}
+                  {billLandlords?.rental?.rental_price ||
+                    billLandlords?.rental?.room?.price}{" "}
+                  VNĐ
                 </p>
               </div>
             </div>

@@ -25,6 +25,13 @@ function RoomDetailPage(props) {
     queryKey: ["room", id],
     queryFn: () => getById(id),
   });
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
   const {
     register,
     handleSubmit,
@@ -107,7 +114,9 @@ function RoomDetailPage(props) {
       <section className="px-12">
         <div className="relative flex gap-4">
           <div>
-            <strong className="text-3xl block">{room?.price} vnd/tháng</strong>
+            <strong className="text-3xl block">
+              {formatPrice(room?.price)}
+            </strong>
             <strong className="uppercase text-[2rem]">{room?.name}</strong>
             <p>{room?.address}</p>
             <p>

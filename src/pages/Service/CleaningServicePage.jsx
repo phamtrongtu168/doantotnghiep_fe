@@ -81,18 +81,6 @@ function CleaningServicePage() {
             {...register("service_id")}
           />
 
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={isRoom}
-              onChange={handleToggle}
-              className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary"
-            />
-            <span className="text-sm font-medium">
-              {isRoom ? "Địa chỉ khác" : "Phòng của tôi"}
-            </span>
-          </label>
-
           {isRoom ? (
             <div>
               <label className="block mb-2 text-sm font-medium">
@@ -135,6 +123,17 @@ function CleaningServicePage() {
               )}
             </div>
           )}
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={isRoom}
+              onChange={handleToggle}
+              className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary"
+            />
+            <span className="text-sm font-medium">
+              {isRoom ? "Phòng của tôi" : "Phòng của tôi"}
+            </span>
+          </label>
 
           <div>
             <label className="block mb-2 text-sm font-medium">

@@ -105,7 +105,13 @@ const BannerHomeSilder = () => {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
-
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
   const onSubmit = async (data) => {
     try {
       data.province_id = selectedProvince?.code || "";
@@ -115,7 +121,12 @@ const BannerHomeSilder = () => {
       navigate("/rooms", { state: response });
     } catch (error) {}
   };
-  const firstRoom = rooms && rooms[0];
+  // Lấy room có giá cao nhất
+  const firstRoom =
+    rooms &&
+    rooms.reduce((acc, curr) => {
+      return acc.price > curr.price ? acc : curr;
+    }, rooms[0]);
   console.log(firstRoom?.images[0]?.image_url);
   return (
     <Element name="home">
@@ -127,7 +138,7 @@ const BannerHomeSilder = () => {
           <div className="w-3/5">
             <h1 className="text-6xl text-primary">Phòng Đặc Biệt</h1>
             <strong className="block text-white text-3xl leading-normal text-shadow">
-              Giá: {firstRoom?.price}/tháng
+              Giá: {formatPrice(firstRoom?.price)}/tháng
             </strong>
             <strong className="block text-white text-3xl leading-normal text-shadow">
               Địa chỉ: {firstRoom?.address} <br />
